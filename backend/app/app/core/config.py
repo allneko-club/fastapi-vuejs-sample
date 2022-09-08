@@ -27,30 +27,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str
     SENTRY_DSN: Optional[HttpUrl] = None
 
-    @validator("SENTRY_DSN", pre=True)
-    def sentry_dsn_can_be_blank(cls, v: str) -> Optional[str]:
-        if len(v) == 0:
-            return None
-        return v
-
-    POSTGRES_SERVER: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
-
-    @validator("SQLALCHEMY_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
-        if isinstance(v, str):
-            return v
-        return PostgresDsn.build(
-            scheme="postgresql",
-            user=values.get("POSTGRES_USER"),
-            password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_SERVER"),
-            path=f"/{values.get('POSTGRES_DB') or ''}",
-        )
-
     SMTP_TLS: bool = True
     SMTP_PORT: Optional[int] = None
     SMTP_HOST: Optional[str] = None
@@ -86,4 +62,45 @@ class Settings(BaseSettings):
         case_sensitive = True
 
 
-settings = Settings()
+class ProductionSettings(Settings):
+
+    POSTGRES_SERVER: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+    SQLALCHEMY_DATABASE_URL: Optional[PostgresDsn] = None
+
+    @validator("SQLALCHEMY_DATABASE_URL", pre=True)
+    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql",
+            user=values.get("POSTGRES_USER"),
+            password=values.get("POSTGRES_PASSWORD"),
+            host=values.get("POSTGRES_SERVER"),
+            path=f"/{values.get('POSTGRES_DB') or ''}",
+        )
+
+
+class DevSettings(Settings):
+    SERVER_NAME: str = '127.0.0.1'
+    SERVER_HOST: AnyHttpUrl = f'http://{SERVER_NAME}'
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:8080", "http://127.0.0.1:8080"]
+    PROJECT_NAME: str = 'fastapi-sample'
+    FIRST_SUPERUSER: EmailStr = "admin@example.com"
+    FIRST_SUPERUSER_PASSWORD: str = "password"
+    SQLALCHEMY_DATABASE_URL: str = "sqlite:///./sql_app.db"
+
+    class Config:
+        case_sensitive = True
+        env_file = ".env"
+
+
+DEBUG = True
+
+
+if DEBUG:
+    settings = DevSettings()
+else:
+    settings = ProductionSettings()
