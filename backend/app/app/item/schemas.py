@@ -6,15 +6,15 @@ class ItemBase(BaseModel):
     description: str | None = None
 
 
-class ItemCreate(ItemBase):
+class ItemCreateSchema(ItemBase):
     title: str
 
 
-class ItemUpdate(ItemBase):
+class ItemUpdateSchema(ItemBase):
     pass
 
 
-class ItemInDBBase(ItemBase):
+class ItemInDBSchemaBase(ItemBase):
     id: int
     title: str
     owner_id: int
@@ -23,9 +23,9 @@ class ItemInDBBase(ItemBase):
         orm_mode = True
 
 
-class Item(ItemInDBBase):
+class ItemSchema(ItemInDBSchemaBase):
     pass
 
 
-class ItemInDB(ItemInDBBase):
+class ItemInDBSchema(ItemInDBSchemaBase):
     pass

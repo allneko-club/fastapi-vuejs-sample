@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.item.crud import crud_item
 from app.core.config import settings
-from app.tests.utils.item import create_random_item
+from app.tests.item.utils import create_random_item
 
 
 def test_read_items(

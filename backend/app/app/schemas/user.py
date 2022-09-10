@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from app.schemas import Item
+from app.item.schemas import ItemSchema
 
 
 class UserBase(BaseModel):
@@ -31,7 +31,7 @@ class User(UserInDBBase):
     apiで返すためのモデル
     passwordやhashed_passwordはセキュリティーのため扱わない
     """
-    items: list[Item] = []
+    items: list[ItemSchema] = []
 
 
 class UserInDB(UserInDBBase):
