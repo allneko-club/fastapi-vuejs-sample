@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app import crud, models
 from app.item.schemas import ItemSchema, ItemCreateSchema, ItemUpdateSchema
-from app.item.crud import crud_item
+from app.item.cruds import crud_item
 from app.routers.dependencies import get_db, get_current_active_user
 
 router = APIRouter()

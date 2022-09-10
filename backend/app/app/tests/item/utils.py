@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from app.item.crud import crud_item
+from app.item.cruds import crud_item
 from app.item.schemas import ItemCreateSchema
 from app.item.models import Item
 from app.tests.user.utils import create_random_user
