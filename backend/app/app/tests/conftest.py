@@ -1,3 +1,5 @@
+from typing import Generator
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session, sessionmaker
@@ -29,23 +31,23 @@ app.dependency_overrides[get_db] = override_get_db
 
 
 @pytest.fixture(scope="session")
-def db():
+def db() -> Generator:
     db = TestingSessionLocal()
     init_db(db)
     yield db
 
 
 @pytest.fixture(scope="module")
-def client():
+def client() -> Generator:
     with TestClient(app) as c:
         yield c
 
 
 @pytest.fixture(scope="module")
-def superuser_token_headers(client):
+def superuser_token_headers(client: TestClient) -> dict[str, str]:
     return get_superuser_token_headers(client)
 
 
 @pytest.fixture(scope="module")
-def normal_user_token_headers(client, db):
+def normal_user_token_headers(client: TestClient, db: Session) -> dict[str, str]:
     return authentication_token_from_email(client, settings.EMAIL_TEST_USER, db)

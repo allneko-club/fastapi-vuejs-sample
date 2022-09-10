@@ -1,12 +1,10 @@
-from sqlalchemy.orm import Session
-
 from app.item.cruds import crud_item
 from app.item.schemas import ItemCreateSchema, ItemUpdateSchema
 from app.tests.user.utils import create_random_user
 from app.tests.utils.utils import random_lower_string
 
 
-def test_create_item(db: Session):
+def test_create_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)
@@ -17,7 +15,7 @@ def test_create_item(db: Session):
     assert item.owner_id == user.id
 
 
-def test_get_item(db: Session):
+def test_get_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)
@@ -31,7 +29,7 @@ def test_get_item(db: Session):
     assert item.owner_id == stored_item.owner_id
 
 
-def test_update_item(db: Session):
+def test_update_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)
@@ -46,7 +44,7 @@ def test_update_item(db: Session):
     assert item.owner_id == item2.owner_id
 
 
-def test_delete_item(db: Session):
+def test_delete_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)

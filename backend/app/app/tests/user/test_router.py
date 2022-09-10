@@ -1,8 +1,4 @@
 from unittest.mock import patch
-from typing import Dict
-
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.tests.utils.utils import random_email, random_lower_string
@@ -15,7 +11,7 @@ from app.user.schemas import UserCreateSchema
 # -------------
 
 
-def test_retrieve_users(client: TestClient, superuser_token_headers: dict, db: Session):
+def test_retrieve_users(client, superuser_token_headers, db):
     username = random_email()
     password = random_lower_string()
     user_in = UserCreateSchema(email=username, password=password)
@@ -34,7 +30,7 @@ def test_retrieve_users(client: TestClient, superuser_token_headers: dict, db: S
         assert "email" in item
 
 
-def test_create_user_new_email(client: TestClient, superuser_token_headers: dict, db: Session):
+def test_create_user_new_email(client, superuser_token_headers, db):
     username = random_email()
     password = random_lower_string()
     is_active = False
@@ -57,9 +53,7 @@ def test_create_user_new_email(client: TestClient, superuser_token_headers: dict
     assert user.is_superuser == created_user["is_superuser"] == is_superuser
 
 
-def test_create_user_existing_username(
-    client: TestClient, superuser_token_headers: dict, db: Session
-) -> None:
+def test_create_user_existing_username(client, superuser_token_headers, db):
     username = random_email()
     # username = email
     password = random_lower_string()
@@ -74,7 +68,7 @@ def test_create_user_existing_username(
     assert "_id" not in created_user
 
 
-def test_create_user_by_normal_user(client: TestClient, normal_user_token_headers: Dict[str, str]):
+def test_create_user_by_normal_user(client, normal_user_token_headers):
     username = random_email()
     password = random_lower_string()
     data = {"email": username, "password": password}
@@ -88,7 +82,7 @@ def test_create_user_by_normal_user(client: TestClient, normal_user_token_header
 # /users/me
 # -------------
 
-def test_get_users_superuser_me(client: TestClient, superuser_token_headers: Dict[str, str]):
+def test_get_users_superuser_me(client, superuser_token_headers):
     r = client.get(f"{settings.API_V1_STR}/users/me", headers=superuser_token_headers)
     current_user = r.json()
     assert current_user
@@ -97,7 +91,7 @@ def test_get_users_superuser_me(client: TestClient, superuser_token_headers: Dic
     assert current_user["email"] == settings.FIRST_SUPERUSER
 
 
-def test_get_users_normal_user_me(client: TestClient, normal_user_token_headers: Dict[str, str]):
+def test_get_users_normal_user_me(client, normal_user_token_headers):
     r = client.get(f"{settings.API_V1_STR}/users/me", headers=normal_user_token_headers)
     current_user = r.json()
     assert current_user
@@ -106,7 +100,7 @@ def test_get_users_normal_user_me(client: TestClient, normal_user_token_headers:
     assert current_user["email"] == settings.EMAIL_TEST_USER
 
 
-def test_update_user_me(client: TestClient, normal_user_token_headers: Dict[str, str]):
+def test_update_user_me(client, normal_user_token_headers):
     password = random_lower_string()
     full_name = 'full name'
     data = {"password": password, "full_name": full_name}
@@ -121,7 +115,7 @@ def test_update_user_me(client: TestClient, normal_user_token_headers: Dict[str,
 # /open
 # -------------
 @patch('app.user.routers.settings')
-def test_create_user_open(mock, client: TestClient, db: Session):
+def test_create_user_open(mock, client, db):
     mock.USERS_OPEN_REGISTRATION = True
     username = random_email()
     password = random_lower_string()
@@ -137,7 +131,7 @@ def test_create_user_open(mock, client: TestClient, db: Session):
 
 
 @patch('app.user.routers.settings')
-def test_create_user_open_not_allowed(mock, client: TestClient):
+def test_create_user_open_not_allowed(mock, client):
     mock.USERS_OPEN_REGISTRATION = False
     data = {'email': random_email(), 'password': 'password', 'full_name': 'Full Name'}
     r = client.post(f'{settings.API_V1_STR}/users/open', json=data)
@@ -148,7 +142,7 @@ def test_create_user_open_not_allowed(mock, client: TestClient):
 # /users/{user_id}
 # -------------
 
-def test_read_user_by_id_if_superuser(client: TestClient, superuser_token_headers: dict, db: Session):
+def test_read_user_by_id_if_superuser(client, superuser_token_headers, db):
     username = random_email()
     password = random_lower_string()
     user_in = UserCreateSchema(email=username, password=password)
@@ -164,7 +158,7 @@ def test_read_user_by_id_if_superuser(client: TestClient, superuser_token_header
     assert existing_user.id == api_user["id"]
 
 
-def test_read_user_by_id_if_normal_user_read_others(client: TestClient, normal_user_token_headers: dict, db: Session):
+def test_read_user_by_id_if_normal_user_read_others(client, normal_user_token_headers, db):
     username = random_email()
     password = random_lower_string()
     user_in = UserCreateSchema(email=username, password=password)
@@ -176,7 +170,7 @@ def test_read_user_by_id_if_normal_user_read_others(client: TestClient, normal_u
     assert r.status_code == 400
 
 
-def test_update_user(client: TestClient, superuser_token_headers: dict, db: Session):
+def test_update_user(client, superuser_token_headers, db):
     username = random_email()
     password = random_lower_string()
     user_in = UserCreateSchema(email=username, password=password)
@@ -192,9 +186,7 @@ def test_update_user(client: TestClient, superuser_token_headers: dict, db: Sess
     assert existing_user.id == api_user["id"]
 
 
-def test_update_user_by_normal_user(
-    client: TestClient, normal_user_token_headers: dict, db: Session
-):
+def test_update_user_by_normal_user(client, normal_user_token_headers, db):
     user = db.query(User).first()
     data = {'full_name': 'Full Name'}
     r = client.post(

@@ -1,15 +1,10 @@
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from app.item.cruds import crud_item
 from app.core.config import settings
 from app.tests.item.utils import create_random_item
 from app.user.cruds import crud_user
 
 
-def test_read_items(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_read_items(client, superuser_token_headers, db):
     item = create_random_item(db)
     response = client.get(
         f"{settings.API_V1_STR}/items/", headers=superuser_token_headers,
@@ -19,9 +14,7 @@ def test_read_items(
     assert len(all_items) > 0
 
 
-def test_read_items_if_normal_user(
-    client: TestClient, normal_user_token_headers: dict, db: Session
-):
+def test_read_items_if_normal_user(client, normal_user_token_headers, db):
     user = crud_user.get_by_email(db, settings.EMAIL_TEST_USER)
     item = create_random_item(db, owner_id=user.id)
     response = client.get(
@@ -34,9 +27,7 @@ def test_read_items_if_normal_user(
         assert item['owner_id'] == user.id
 
 
-def test_create_item(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_create_item(client, superuser_token_headers, db):
     data = {"title": "Foo", "description": "Fighters"}
     response = client.post(
         f"{settings.API_V1_STR}/items/", headers=superuser_token_headers, json=data,
@@ -49,9 +40,7 @@ def test_create_item(
     assert "owner_id" in content
 
 
-def test_read_item(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_read_item(client, superuser_token_headers, db):
     item = create_random_item(db)
     response = client.get(
         f"{settings.API_V1_STR}/items/{item.id}", headers=superuser_token_headers,
@@ -64,18 +53,14 @@ def test_read_item(
     assert content["owner_id"] == item.owner_id
 
 
-def test_read_item_not_found(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_read_item_not_found(client, superuser_token_headers, db):
     response = client.get(
         f"{settings.API_V1_STR}/items/10000", headers=superuser_token_headers,
     )
     assert response.status_code == 404
 
 
-def test_read_item_if_no_permissions(
-    client: TestClient, normal_user_token_headers: dict, db: Session
-):
+def test_read_item_if_no_permissions(client, normal_user_token_headers, db):
     item = create_random_item(db)
     response = client.get(
         f"{settings.API_V1_STR}/items/{item.id}", headers=normal_user_token_headers,
@@ -83,9 +68,7 @@ def test_read_item_if_no_permissions(
     assert response.status_code == 400
 
 
-def test_update_item(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_update_item(client, superuser_token_headers, db):
     item = create_random_item(db)
     data = {"title": "Foo", "description": "Fighters"}
     response = client.put(
@@ -99,9 +82,7 @@ def test_update_item(
     assert "owner_id" in content
 
 
-def test_update_item_if_item_not_found(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_update_item_if_item_not_found(client, superuser_token_headers, db):
     data = {"title": "Foo", "description": "Fighters"}
     response = client.put(
         f"{settings.API_V1_STR}/items/10000", headers=superuser_token_headers, json=data,
@@ -109,9 +90,7 @@ def test_update_item_if_item_not_found(
     assert response.status_code == 404
 
 
-def test_update_item_if_no_permissions(
-    client: TestClient, normal_user_token_headers: dict, db: Session
-):
+def test_update_item_if_no_permissions(client, normal_user_token_headers, db):
     item = create_random_item(db)
     data = {"title": "Foo", "description": "Fighters"}
     response = client.put(
@@ -120,9 +99,7 @@ def test_update_item_if_no_permissions(
     assert response.status_code == 400
 
 
-def test_delete_item(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_delete_item(client, superuser_token_headers, db):
     item = create_random_item(db)
     response = client.delete(
         f"{settings.API_V1_STR}/items/{item.id}", headers=superuser_token_headers,
@@ -131,18 +108,14 @@ def test_delete_item(
     assert crud_item.get(db, item.id) is None
 
 
-def test_delete_item_not_found(
-    client: TestClient, superuser_token_headers: dict, db: Session
-):
+def test_delete_item_not_found(client, superuser_token_headers, db):
     response = client.delete(
         f"{settings.API_V1_STR}/items/10000", headers=superuser_token_headers,
     )
     assert response.status_code == 404
 
 
-def test_delete_item_if_no_permissions(
-    client: TestClient, normal_user_token_headers: dict, db: Session
-):
+def test_delete_item_if_no_permissions(client, normal_user_token_headers, db):
     item = create_random_item(db)
     response = client.delete(
         f"{settings.API_V1_STR}/items/{item.id}", headers=normal_user_token_headers,
