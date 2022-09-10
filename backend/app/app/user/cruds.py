@@ -1,18 +1,18 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash, verify_password
-from app.crud.base import CRUDBase
-from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.core.crud import CRUDBase
+from app.user.models import User
+from app.user.schemas import UserCreateSchema, UserUpdateSchema
 
 
-class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
+class CRUDUser(CRUDBase[User, UserCreateSchema, UserUpdateSchema]):
     def get_by_email(self, db: Session, email: str):
         return db.query(User).filter(User.email == email).first()
 
-    def create(self, db: Session, obj_in: UserCreate):
+    def create(self, db: Session, obj_in: UserCreateSchema):
         db_obj = User(
             email=obj_in.email,
             hashed_password=get_password_hash(obj_in.password),
@@ -26,7 +26,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return db_obj
 
     def update(
-        self, db: Session, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
+        self, db: Session, db_obj: User, obj_in: UserUpdateSchema | dict[str, Any]
     ):
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -53,4 +53,4 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return user.is_superuser
 
 
-user = CRUDUser(User)
+crud_user = CRUDUser(User)

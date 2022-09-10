@@ -1,10 +1,10 @@
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app import crud
 from app.item.cruds import crud_item
 from app.core.config import settings
 from app.tests.item.utils import create_random_item
+from app.user.cruds import crud_user
 
 
 def test_read_items(
@@ -22,7 +22,7 @@ def test_read_items(
 def test_read_items_if_normal_user(
     client: TestClient, normal_user_token_headers: dict, db: Session
 ):
-    user = crud.user.get_by_email(db, settings.EMAIL_TEST_USER)
+    user = crud_user.get_by_email(db, settings.EMAIL_TEST_USER)
     item = create_random_item(db, owner_id=user.id)
     response = client.get(
         f"{settings.API_V1_STR}/items/", headers=normal_user_token_headers,
