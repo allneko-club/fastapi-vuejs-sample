@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app import crud
+from app.item.crud import crud_item
 from app.core.config import settings
 from app.tests.utils.item import create_random_item
 
@@ -127,7 +128,7 @@ def test_delete_item(
         f"{settings.API_V1_STR}/items/{item.id}", headers=superuser_token_headers,
     )
     assert response.status_code == 200
-    assert crud.item.get(db, item.id) is None
+    assert crud_item.get(db, item.id) is None
 
 
 def test_delete_item_not_found(

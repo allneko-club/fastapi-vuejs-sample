@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
-from app.api import deps
+from app.routers.dependencies import get_db, get_current_active_user
 
 router = APIRouter()
 
@@ -13,8 +13,8 @@ router = APIRouter()
 def read_items(
     skip: int = 0,
     limit: int = 100,
-    db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_user),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user),
 ):
     """
     Retrieve items.
@@ -31,8 +31,8 @@ def read_items(
 @router.post("/", response_model=schemas.Item)
 def create_item(
     item_in: schemas.ItemCreate,
-    db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_user),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user),
 ):
     """
     Create new item.
@@ -44,8 +44,8 @@ def create_item(
 @router.get("/{id}", response_model=schemas.Item)
 def read_item(
     id: int,
-    db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_user),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user),
 ) -> Any:
     """
     Get item by ID.
@@ -62,8 +62,8 @@ def read_item(
 def update_item(
     id: int,
     item_in: schemas.ItemUpdate,
-    db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_user),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user),
 ):
     """
     Update an item.
@@ -80,8 +80,8 @@ def update_item(
 @router.delete("/{id}", response_model=schemas.Item)
 def delete_item(
     id: int,
-    db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_user),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user),
 ):
     """
     Delete an item.
