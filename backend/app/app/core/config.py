@@ -1,11 +1,14 @@
+from pathlib import Path
 import secrets
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, validator
 
+BASE_DIR = Path(__file__).parent.parent.parent.parent
+
 
 class Settings(BaseSettings):
-    API_V1_STR: str = "/api/v1"
+    API_V1_STR: str = "/api"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
@@ -14,10 +17,10 @@ class Settings(BaseSettings):
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    def assemble_cors_origins(cls, v: str | list[str]):
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):
@@ -25,28 +28,28 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     PROJECT_NAME: str
-    SENTRY_DSN: Optional[HttpUrl] = None
+    SENTRY_DSN: HttpUrl | None = None
 
     SMTP_TLS: bool = True
-    SMTP_PORT: Optional[int] = None
-    SMTP_HOST: Optional[str] = None
-    SMTP_USER: Optional[str] = None
-    SMTP_PASSWORD: Optional[str] = None
-    EMAILS_FROM_EMAIL: Optional[EmailStr] = None
-    EMAILS_FROM_NAME: Optional[str] = None
+    SMTP_PORT: int | None = None
+    SMTP_HOST: str | None = None
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+    EMAILS_FROM_EMAIL: EmailStr | None = None
+    EMAILS_FROM_NAME: str | None = None
 
     @validator("EMAILS_FROM_NAME")
-    def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:
+    def get_project_name(cls, v: str | None, values: dict[str, Any]):
         if not v:
             return values["PROJECT_NAME"]
         return v
 
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
-    EMAIL_TEMPLATES_DIR: str = "/app/app/email-templates/build"
+    EMAIL_TEMPLATES_DIR: str = str(BASE_DIR / "app/app/mail/templates/build")
     EMAILS_ENABLED: bool = False
 
     @validator("EMAILS_ENABLED", pre=True)
-    def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
+    def get_emails_enabled(cls, v: bool, values: dict[str, Any]):
         return bool(
             values.get("SMTP_HOST")
             and values.get("SMTP_PORT")
@@ -68,10 +71,10 @@ class ProductionSettings(Settings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URL: Optional[PostgresDsn] = None
+    SQLALCHEMY_DATABASE_URL: PostgresDsn | None = None
 
     @validator("SQLALCHEMY_DATABASE_URL", pre=True)
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]):
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
@@ -86,7 +89,7 @@ class ProductionSettings(Settings):
 class DevSettings(Settings):
     SERVER_NAME: str = '127.0.0.1'
     SERVER_HOST: AnyHttpUrl = f'http://{SERVER_NAME}'
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:8080", "http://127.0.0.1:8080"]
+    BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = ["http://localhost:8080", "http://127.0.0.1:8080"]
     PROJECT_NAME: str = 'fastapi-sample'
     FIRST_SUPERUSER: EmailStr = "admin@example.com"
     FIRST_SUPERUSER_PASSWORD: str = "password"

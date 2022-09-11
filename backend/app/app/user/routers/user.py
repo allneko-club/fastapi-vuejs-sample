@@ -109,7 +109,7 @@ def read_user_by_id(
     user = crud_user.get(db, id=user_id)
     if user == current_user:
         return user
-    if not crud_user.is_superuser(current_user):
+    if not current_user.is_superuser:
         raise HTTPException(
             status_code=400, detail="The user doesn't have enough privileges"
         )

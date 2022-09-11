@@ -9,7 +9,7 @@ from app.user.schemas import UserCreateSchema, UserUpdateSchema
 
 
 class CRUDUser(CRUDBase[User, UserCreateSchema, UserUpdateSchema]):
-    def get_by_email(self, db: Session, email: str):
+    def get_by_email(self, db: Session, email: str) -> User | None:
         return db.query(User).filter(User.email == email).first()
 
     def create(self, db: Session, obj_in: UserCreateSchema):
@@ -38,19 +38,13 @@ class CRUDUser(CRUDBase[User, UserCreateSchema, UserUpdateSchema]):
             update_data["hashed_password"] = hashed_password
         return super().update(db, db_obj, update_data)
 
-    def authenticate(self, db: Session, email: str, password: str):
+    def authenticate(self, db: Session, email: str, password: str) -> User | None:
         user = self.get_by_email(db, email=email)
         if not user:
             return None
         if not verify_password(password, user.hashed_password):
             return None
         return user
-
-    def is_active(self, user: User):
-        return user.is_active
-
-    def is_superuser(self, user: User):
-        return user.is_superuser
 
 
 crud_user = CRUDUser(User)

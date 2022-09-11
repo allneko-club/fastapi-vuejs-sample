@@ -37,8 +37,7 @@ def test_check_if_user_is_active(db):
     password = random_lower_string()
     user_in = UserCreateSchema(email=email, password=password)
     user = crud_user.create(db, user_in)
-    is_active = crud_user.is_active(user)
-    assert is_active is True
+    assert user.is_active
 
 
 def test_check_if_user_is_active_inactive(db):
@@ -46,8 +45,7 @@ def test_check_if_user_is_active_inactive(db):
     password = random_lower_string()
     user_in = UserCreateSchema(email=email, password=password, disabled=True)
     user = crud_user.create(db, user_in)
-    is_active = crud_user.is_active(user)
-    assert is_active
+    assert user.is_active
 
 
 def test_check_if_user_is_superuser(db):
@@ -55,8 +53,7 @@ def test_check_if_user_is_superuser(db):
     password = random_lower_string()
     user_in = UserCreateSchema(email=email, password=password, is_superuser=True)
     user = crud_user.create(db, user_in)
-    is_superuser = crud_user.is_superuser(user)
-    assert is_superuser is True
+    assert user.is_superuser is True
 
 
 def test_check_if_user_is_superuser_normal_user(db):
@@ -64,8 +61,7 @@ def test_check_if_user_is_superuser_normal_user(db):
     password = random_lower_string()
     user_in = UserCreateSchema(email=username, password=password)
     user = crud_user.create(db, user_in)
-    is_superuser = crud_user.is_superuser(user)
-    assert is_superuser is False
+    assert user.is_superuser is False
 
 
 def test_get_user(db):

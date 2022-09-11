@@ -46,13 +46,13 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusabl
 
 
 def get_current_active_user(current_user: User = Depends(get_current_user)):
-    if not crud_user.is_active(current_user):
+    if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 
-def get_current_active_superuser(current_user: User = Depends(get_current_user)):
-    if not crud_user.is_superuser(current_user):
+def get_current_active_superuser(current_user: User = Depends(get_current_active_user)):
+    if not current_user.is_superuser:
         raise HTTPException(
             status_code=400, detail="The user doesn't have enough privileges"
         )
