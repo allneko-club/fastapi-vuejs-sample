@@ -60,6 +60,7 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
     USERS_OPEN_REGISTRATION: bool = False
+    ALGORITHM = "HS256"
 
     class Config:
         case_sensitive = True

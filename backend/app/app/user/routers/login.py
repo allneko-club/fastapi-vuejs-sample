@@ -1,13 +1,13 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db, get_current_user
-from app.core import security, schemas
+from app.core import schemas
 from app.core.config import settings
-from app.core.security import get_password_hash
 from app.mail.utils import send_reset_password_email
 from app.utils import generate_password_reset_token, verify_password_reset_token
 from app.user.cruds import crud_user
@@ -18,8 +18,19 @@ from app.user.schemas import UserSchema
 router = APIRouter()
 
 
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return encoded_jwt
+
+
 @router.post("/login/access-token", response_model=schemas.Token)
-def login_access_token(
+async def login_access_token(
     db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
     """
@@ -33,12 +44,12 @@ def login_access_token(
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = security.create_access_token(user.id, expires_delta=access_token_expires)
+    access_token = create_access_token({"sub": str(user.id)}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/login/test-token", response_model=UserSchema)
-def test_token(current_user: User = Depends(get_current_user)):
+async def test_token(current_user: User = Depends(get_current_user)):
     """
     Test access token
     """
@@ -84,8 +95,8 @@ def reset_password(
         )
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
-    hashed_password = get_password_hash(new_password)
-    user.hashed_password = hashed_password
+    # todo get_password_hash()を使わないようにしたい crudメソッドで更新したい
+    user.hashed_password = User.get_password_hash(new_password)
     db.add(user)
     db.commit()
     return {"msg": "Password updated successfully"}

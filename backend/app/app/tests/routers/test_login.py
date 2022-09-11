@@ -1,7 +1,7 @@
 from app.core.config import settings
 
 
-def test_get_access_token(client):
+def test_get_access_token(db, client):
     login_data = {
         "username": settings.FIRST_SUPERUSER,
         "password": settings.FIRST_SUPERUSER_PASSWORD,
@@ -13,7 +13,7 @@ def test_get_access_token(client):
     assert tokens["access_token"]
 
 
-def test_use_access_token(client, superuser_token_headers):
+def test_use_access_token(db, client, superuser_token_headers):
     r = client.post(
         f"{settings.API_V1_STR}/login/test-token", headers=superuser_token_headers,
     )

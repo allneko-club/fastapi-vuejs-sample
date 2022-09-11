@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.core import schemas
-from app.core.celery_app import celery_app
+from app.celery import celery_app
 from app.core.dependencies import get_current_active_superuser
 from app.user.models import User
 
@@ -16,5 +16,5 @@ def test_celery(
     """
     Test Celery worker.
     """
-    celery_app.send_task("app.worker.test_celery", args=[msg.msg])
+    celery_app.send_task("app.tasks.test_celery", args=[msg.msg])
     return {"msg": "Word received"}

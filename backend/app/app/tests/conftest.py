@@ -7,11 +7,11 @@ from sqlalchemy import create_engine
 
 from app.core.dependencies import get_db
 from app.core.config import settings
-from app.db.database import Base
-from app.db.init_db import init_db
+from app.core.db.database import Base
 from app.main import app
 from app.tests.user.utils import authentication_token_from_email
 from app.tests.utils.utils import get_superuser_token_headers
+from app.initial_data import init_db
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})

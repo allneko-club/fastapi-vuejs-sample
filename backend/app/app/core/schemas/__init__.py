@@ -1,2 +1,2 @@
 from .msg import Msg
-from .token import Token, TokenPayload
+from .token import Token, TokenData

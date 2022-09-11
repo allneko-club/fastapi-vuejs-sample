@@ -6,5 +6,5 @@ class Token(BaseModel):
     token_type: str
 
 
-class TokenPayload(BaseModel):
+class TokenData(BaseModel):
     sub: int | None = None
