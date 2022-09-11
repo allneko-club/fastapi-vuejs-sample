@@ -13,7 +13,7 @@ from app import schemas
 from app.user.models import User
 from app.core import security
 from app.core.config import settings
-from app.db.session import SessionLocal
+from app.db.database import SessionLocal
 from app.user.cruds import crud_user
 
 reusable_oauth2 = OAuth2PasswordBearer(

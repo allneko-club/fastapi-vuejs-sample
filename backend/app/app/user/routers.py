@@ -3,7 +3,6 @@ from fastapi.encoders import jsonable_encoder
 from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
 
-from app import schemas
 from app.routers.dependencies import get_db, get_current_active_user, get_current_active_superuser
 from app.core.config import settings
 from app.user.cruds import crud_user
