@@ -114,7 +114,7 @@ def test_update_user_me(client, normal_user_token_headers):
 # -------------
 # /open
 # -------------
-@patch('app.user.routers.settings')
+@patch('app.user.routers.user.settings')
 def test_create_user_open(mock, client, db):
     mock.USERS_OPEN_REGISTRATION = True
     username = random_email()
@@ -130,7 +130,7 @@ def test_create_user_open(mock, client, db):
     assert user.full_name is None
 
 
-@patch('app.user.routers.settings')
+@patch('app.user.routers.user.settings')
 def test_create_user_open_not_allowed(mock, client):
     mock.USERS_OPEN_REGISTRATION = False
     data = {'email': random_email(), 'password': 'password', 'full_name': 'Full Name'}
