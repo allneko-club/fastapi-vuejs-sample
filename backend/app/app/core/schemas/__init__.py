@@ -1,2 +1,1 @@
-from .msg import Msg
-from .token import Token, TokenData
+from .msg import MsgSchema

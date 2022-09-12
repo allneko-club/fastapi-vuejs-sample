@@ -2,8 +2,8 @@ from fastapi.encoders import jsonable_encoder
 
 from app.tests.utils.utils import random_email, random_lower_string
 from app.user.cruds import crud_user
-from app.user.models import User
 from app.user.schemas import UserCreateSchema, UserUpdateSchema
+from app.user.password import verify_password
 
 
 def test_create_user(db):
@@ -86,4 +86,4 @@ def test_update_user(db):
     user_2 = crud_user.get(db, id=user.id)
     assert user_2
     assert user.email == user_2.email
-    assert User.verify_password(new_password, user_2.hashed_password)
+    assert verify_password(new_password, user_2.hashed_password)

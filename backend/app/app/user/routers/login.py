@@ -5,14 +5,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_db, get_current_user
-from app.core import schemas
 from app.core.config import settings
+from app.core.dependencies import get_db
+from app.core.schemas import MsgSchema
 from app.mail.utils import send_reset_password_email
-from app.utils import generate_password_reset_token, verify_password_reset_token
 from app.user.cruds import crud_user
+from app.user.dependencies import get_current_user
 from app.user.models import User
-from app.user.schemas import UserSchema
+from app.user.schemas import UserSchema, TokenSchema
+from app.user.password import generate_password_reset_token, verify_password_reset_token
 
 
 router = APIRouter()
@@ -29,7 +30,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     return encoded_jwt
 
 
-@router.post("/login/access-token", response_model=schemas.Token)
+@router.post("/login/access-token", response_model=TokenSchema)
 async def login_access_token(
     db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -56,7 +57,7 @@ async def test_token(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@router.post("/password-recovery/{email}", response_model=schemas.Msg)
+@router.post("/password-recovery/{email}", response_model=MsgSchema)
 def recover_password(email: str, db: Session = Depends(get_db)):
     """
     Password Recovery
@@ -75,7 +76,7 @@ def recover_password(email: str, db: Session = Depends(get_db)):
     return {"msg": "Password recovery email sent"}
 
 
-@router.post("/reset-password/", response_model=schemas.Msg)
+@router.post("/reset-password/", response_model=MsgSchema)
 def reset_password(
     token: str = Body(...),
     new_password: str = Body(...),
@@ -95,8 +96,7 @@ def reset_password(
         )
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
-    # todo get_password_hash()を使わないようにしたい crudメソッドで更新したい
-    user.hashed_password = User.get_password_hash(new_password)
+    user.set_password(new_password)
     db.add(user)
     db.commit()
     return {"msg": "Password updated successfully"}

@@ -163,9 +163,8 @@ def test_read_user_by_id_if_normal_user_read_others(client, normal_user_token_he
     password = random_lower_string()
     user_in = UserCreateSchema(email=username, password=password)
     user = crud_user.create(db, user_in)
-    user_id = user.id
     r = client.get(
-        f"{settings.API_V1_STR}/users/{user_id}", headers=normal_user_token_headers,
+        f"{settings.API_V1_STR}/users/{user.id}", headers=normal_user_token_headers,
     )
     assert r.status_code == 400
 
@@ -175,9 +174,8 @@ def test_update_user(client, superuser_token_headers, db):
     password = random_lower_string()
     user_in = UserCreateSchema(email=username, password=password)
     user = crud_user.create(db, user_in)
-    user_id = user.id
     r = client.get(
-        f"{settings.API_V1_STR}/users/{user_id}", headers=superuser_token_headers,
+        f"{settings.API_V1_STR}/users/{user.id}", headers=superuser_token_headers,
     )
     assert 200 <= r.status_code < 300
     api_user = r.json()

@@ -17,10 +17,5 @@ class User(Base):
     is_superuser = Column(Boolean(), default=False)
     items = relationship("Item", back_populates="owner")
 
-    @classmethod
-    def verify_password(cls, plain_password: str, hashed_password: str) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
-
-    @classmethod
-    def get_password_hash(cls, password: str) -> str:
-        return pwd_context.hash(password)
+    def set_password(self, password: str):
+        self.hashed_password = self.get_password_hash(password)

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.crud import CRUDBase
 from app.user.models import User
 from app.user.schemas import UserCreateSchema, UserUpdateSchema
+from app.user.password import verify_password, get_password_hash
 
 
 class CRUDUser(CRUDBase[User, UserCreateSchema, UserUpdateSchema]):
@@ -14,7 +15,7 @@ class CRUDUser(CRUDBase[User, UserCreateSchema, UserUpdateSchema]):
     def create(self, db: Session, obj_in: UserCreateSchema):
         db_obj = User(
             email=obj_in.email,
-            hashed_password=User.get_password_hash(obj_in.password),
+            hashed_password=get_password_hash(obj_in.password),
             full_name=obj_in.full_name,
             is_superuser=obj_in.is_superuser,
             is_active=obj_in.is_active,
@@ -32,7 +33,7 @@ class CRUDUser(CRUDBase[User, UserCreateSchema, UserUpdateSchema]):
         else:
             update_data = obj_in.dict(exclude_unset=True)
         if "password" in update_data:
-            hashed_password = User.get_password_hash(update_data["password"])
+            hashed_password = get_password_hash(update_data["password"])
             del update_data["password"]
             update_data["hashed_password"] = hashed_password
         return super().update(db, db_obj, update_data)
@@ -41,7 +42,7 @@ class CRUDUser(CRUDBase[User, UserCreateSchema, UserUpdateSchema]):
         user = self.get_by_email(db, email=email)
         if not user:
             return None
-        if not User.verify_password(password, user.hashed_password):
+        if not verify_password(password, user.hashed_password):
             return None
         return user
 
