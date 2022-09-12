@@ -1,14 +1,14 @@
 from fastapi.encoders import jsonable_encoder
 
-from app.tests.utils.utils import random_email, random_lower_string
+from app.tests.conftest import fake
 from app.user.cruds import crud_user
 from app.user.schemas import UserCreateSchema, UserUpdateSchema
 from app.user.password import verify_password
 
 
 def test_create_user(db):
-    email = random_email()
-    password = random_lower_string()
+    email = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=email, password=password)
     user = crud_user.create(db, user_in)
     assert user.email == email
@@ -16,8 +16,8 @@ def test_create_user(db):
 
 
 def test_authenticate_user(db):
-    email = random_email()
-    password = random_lower_string()
+    email = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=email, password=password)
     user = crud_user.create(db, user_in)
     authenticated_user = crud_user.authenticate(db, email, password)
@@ -26,47 +26,47 @@ def test_authenticate_user(db):
 
 
 def test_not_authenticate_user(db):
-    email = random_email()
-    password = random_lower_string()
+    email = fake.email()
+    password = fake.pystr()
     user = crud_user.authenticate(db, email, password)
     assert user is None
 
 
 def test_check_if_user_is_active(db):
-    email = random_email()
-    password = random_lower_string()
+    email = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=email, password=password)
     user = crud_user.create(db, user_in)
     assert user.is_active
 
 
 def test_check_if_user_is_active_inactive(db):
-    email = random_email()
-    password = random_lower_string()
+    email = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=email, password=password, disabled=True)
     user = crud_user.create(db, user_in)
     assert user.is_active
 
 
 def test_check_if_user_is_superuser(db):
-    email = random_email()
-    password = random_lower_string()
+    email = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=email, password=password, is_superuser=True)
     user = crud_user.create(db, user_in)
     assert user.is_superuser is True
 
 
 def test_check_if_user_is_superuser_normal_user(db):
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=username, password=password)
     user = crud_user.create(db, user_in)
     assert user.is_superuser is False
 
 
 def test_get_user(db):
-    password = random_lower_string()
-    username = random_email()
+    password = fake.pystr()
+    username = fake.email()
     user_in = UserCreateSchema(email=username, password=password, is_superuser=True)
     user = crud_user.create(db, user_in)
     user_2 = crud_user.get(db, id=user.id)
@@ -76,11 +76,11 @@ def test_get_user(db):
 
 
 def test_update_user(db):
-    password = random_lower_string()
-    email = random_email()
+    password = fake.pystr()
+    email = fake.email()
     user_in = UserCreateSchema(email=email, password=password, is_superuser=True)
     user = crud_user.create(db, user_in)
-    new_password = random_lower_string()
+    new_password = fake.pystr()
     user_in_update = UserUpdateSchema(password=new_password, is_superuser=True)
     crud_user.update(db, db_obj=user, obj_in=user_in_update)
     user_2 = crud_user.get(db, id=user.id)

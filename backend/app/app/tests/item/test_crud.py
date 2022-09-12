@@ -1,12 +1,12 @@
 from app.item.cruds import crud_item
 from app.item.schemas import ItemCreateSchema, ItemUpdateSchema
-from app.tests.utils.utils import random_lower_string
+from app.tests.conftest import fake
 from app.tests.factories import UserFactory
 
 
 def test_create_item(db):
-    title = random_lower_string()
-    description = random_lower_string()
+    title = fake.pystr()
+    description = fake.pystr()
     item_in = ItemCreateSchema(title=title, description=description)
     user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)
@@ -16,8 +16,8 @@ def test_create_item(db):
 
 
 def test_get_item(db):
-    title = random_lower_string()
-    description = random_lower_string()
+    title = fake.pystr()
+    description = fake.pystr()
     item_in = ItemCreateSchema(title=title, description=description)
     user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)
@@ -30,12 +30,12 @@ def test_get_item(db):
 
 
 def test_update_item(db):
-    title = random_lower_string()
-    description = random_lower_string()
+    title = fake.pystr()
+    description = fake.pystr()
     item_in = ItemCreateSchema(title=title, description=description)
     user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)
-    description2 = random_lower_string()
+    description2 = fake.pystr()
     item_update = ItemUpdateSchema(description=description2)
     item2 = crud_item.update(db=db, db_obj=item, obj_in=item_update)
     assert item.id == item2.id
@@ -45,8 +45,8 @@ def test_update_item(db):
 
 
 def test_delete_item(db):
-    title = random_lower_string()
-    description = random_lower_string()
+    title = fake.pystr()
+    description = fake.pystr()
     item_in = ItemCreateSchema(title=title, description=description)
     user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)

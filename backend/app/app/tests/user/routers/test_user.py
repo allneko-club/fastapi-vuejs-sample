@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 from app.core.config import settings
-from app.tests.utils.utils import random_email, random_lower_string
+from app.tests.conftest import fake
 from app.user.cruds import crud_user
 from app.user.models import User
 from app.user.schemas import UserCreateSchema
@@ -12,13 +12,13 @@ from app.user.schemas import UserCreateSchema
 
 
 def test_retrieve_users(client, superuser_token_headers, db):
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=username, password=password)
     crud_user.create(db, user_in)
 
-    username2 = random_email()
-    password2 = random_lower_string()
+    username2 = fake.email()
+    password2 = fake.pystr()
     user_in2 = UserCreateSchema(email=username2, password=password2)
     crud_user.create(db, user_in2)
 
@@ -31,8 +31,8 @@ def test_retrieve_users(client, superuser_token_headers, db):
 
 
 def test_create_user_new_email(client, superuser_token_headers, db):
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     is_active = False
     is_superuser = True
     data = {
@@ -54,9 +54,9 @@ def test_create_user_new_email(client, superuser_token_headers, db):
 
 
 def test_create_user_existing_username(client, superuser_token_headers, db):
-    username = random_email()
+    username = fake.email()
     # username = email
-    password = random_lower_string()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=username, password=password)
     crud_user.create(db, user_in)
     data = {"email": username, "password": password}
@@ -69,8 +69,8 @@ def test_create_user_existing_username(client, superuser_token_headers, db):
 
 
 def test_create_user_by_normal_user(client, normal_user_token_headers):
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     data = {"email": username, "password": password}
     r = client.post(
         f"{settings.API_V1_STR}/users/", headers=normal_user_token_headers, json=data,
@@ -101,7 +101,7 @@ def test_get_users_normal_user_me(client, normal_user_token_headers):
 
 
 def test_update_user_me(client, normal_user_token_headers):
-    password = random_lower_string()
+    password = fake.pystr()
     full_name = 'full name'
     data = {"password": password, "full_name": full_name}
 
@@ -117,8 +117,8 @@ def test_update_user_me(client, normal_user_token_headers):
 @patch('app.user.routers.user.settings')
 def test_create_user_open(mock, client, db):
     mock.USERS_OPEN_REGISTRATION = True
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     data = {"email": username, 'password': password}
 
     r = client.post(f'{settings.API_V1_STR}/users/open', json=data)
@@ -133,7 +133,7 @@ def test_create_user_open(mock, client, db):
 @patch('app.user.routers.user.settings')
 def test_create_user_open_not_allowed(mock, client):
     mock.USERS_OPEN_REGISTRATION = False
-    data = {'email': random_email(), 'password': 'password', 'full_name': 'Full Name'}
+    data = {'email': fake.email(), 'password': 'password', 'full_name': 'Full Name'}
     r = client.post(f'{settings.API_V1_STR}/users/open', json=data)
     assert 403 == r.status_code
 
@@ -143,8 +143,8 @@ def test_create_user_open_not_allowed(mock, client):
 # -------------
 
 def test_read_user_by_id_if_superuser(client, superuser_token_headers, db):
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=username, password=password)
     user = crud_user.create(db, user_in)
     user_id = user.id
@@ -159,8 +159,8 @@ def test_read_user_by_id_if_superuser(client, superuser_token_headers, db):
 
 
 def test_read_user_by_id_if_normal_user_read_others(client, normal_user_token_headers, db):
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=username, password=password)
     user = crud_user.create(db, user_in)
     r = client.get(
@@ -170,8 +170,8 @@ def test_read_user_by_id_if_normal_user_read_others(client, normal_user_token_he
 
 
 def test_update_user(client, superuser_token_headers, db):
-    username = random_email()
-    password = random_lower_string()
+    username = fake.email()
+    password = fake.pystr()
     user_in = UserCreateSchema(email=username, password=password)
     user = crud_user.create(db, user_in)
     r = client.get(
