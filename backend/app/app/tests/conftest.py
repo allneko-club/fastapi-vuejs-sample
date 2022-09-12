@@ -2,7 +2,7 @@ from typing import Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 
 from app.core.dependencies import get_db
@@ -13,15 +13,15 @@ from app.tests.user.utils import authentication_token_from_email
 from app.tests.utils.utils import get_superuser_token_headers
 from app.initial_data import init_db
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Session = scoped_session(sessionmaker())
+engine = create_engine('sqlite:///./test.db', connect_args={"check_same_thread": False})
+Session.configure(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 
 def override_get_db():
     try:
-        db = TestingSessionLocal()
+        db = Session()
         yield db
     finally:
         db.close()
@@ -32,9 +32,15 @@ app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture(scope="session")
 def db() -> Generator:
-    db = TestingSessionLocal()
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    db = Session()
     init_db(db)
+
     yield db
+
+    db.rollback()
+    Session.remove()
 
 
 @pytest.fixture(scope="module")

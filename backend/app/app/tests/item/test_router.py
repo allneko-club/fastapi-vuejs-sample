@@ -1,11 +1,11 @@
 from app.item.cruds import crud_item
 from app.core.config import settings
-from app.tests.item.utils import create_random_item
+from app.tests.factories import ItemFactory
 from app.user.cruds import crud_user
 
 
 def test_read_items(client, superuser_token_headers, db):
-    item = create_random_item(db)
+    item = ItemFactory()
     response = client.get(
         f"{settings.API_V1_STR}/items/", headers=superuser_token_headers,
     )
@@ -16,7 +16,7 @@ def test_read_items(client, superuser_token_headers, db):
 
 def test_read_items_if_normal_user(client, normal_user_token_headers, db):
     user = crud_user.get_by_email(db, settings.EMAIL_TEST_USER)
-    item = create_random_item(db, owner_id=user.id)
+    item = ItemFactory(owner=user)
     response = client.get(
         f"{settings.API_V1_STR}/items/", headers=normal_user_token_headers,
     )
@@ -41,7 +41,7 @@ def test_create_item(client, superuser_token_headers, db):
 
 
 def test_read_item(client, superuser_token_headers, db):
-    item = create_random_item(db)
+    item = ItemFactory()
     response = client.get(
         f"{settings.API_V1_STR}/items/{item.id}", headers=superuser_token_headers,
     )
@@ -61,7 +61,7 @@ def test_read_item_not_found(client, superuser_token_headers, db):
 
 
 def test_read_item_if_no_permissions(client, normal_user_token_headers, db):
-    item = create_random_item(db)
+    item = ItemFactory()
     response = client.get(
         f"{settings.API_V1_STR}/items/{item.id}", headers=normal_user_token_headers,
     )
@@ -69,7 +69,7 @@ def test_read_item_if_no_permissions(client, normal_user_token_headers, db):
 
 
 def test_update_item(client, superuser_token_headers, db):
-    item = create_random_item(db)
+    item = ItemFactory()
     data = {"title": "Foo", "description": "Fighters"}
     response = client.put(
         f"{settings.API_V1_STR}/items/{item.id}", headers=superuser_token_headers, json=data,
@@ -91,7 +91,7 @@ def test_update_item_if_item_not_found(client, superuser_token_headers, db):
 
 
 def test_update_item_if_no_permissions(client, normal_user_token_headers, db):
-    item = create_random_item(db)
+    item = ItemFactory()
     data = {"title": "Foo", "description": "Fighters"}
     response = client.put(
         f"{settings.API_V1_STR}/items/{item.id}", headers=normal_user_token_headers, json=data,
@@ -100,7 +100,7 @@ def test_update_item_if_no_permissions(client, normal_user_token_headers, db):
 
 
 def test_delete_item(client, superuser_token_headers, db):
-    item = create_random_item(db)
+    item = ItemFactory()
     response = client.delete(
         f"{settings.API_V1_STR}/items/{item.id}", headers=superuser_token_headers,
     )
@@ -116,7 +116,7 @@ def test_delete_item_not_found(client, superuser_token_headers, db):
 
 
 def test_delete_item_if_no_permissions(client, normal_user_token_headers, db):
-    item = create_random_item(db)
+    item = ItemFactory()
     response = client.delete(
         f"{settings.API_V1_STR}/items/{item.id}", headers=normal_user_token_headers,
     )

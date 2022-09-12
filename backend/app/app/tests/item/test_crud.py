@@ -1,14 +1,14 @@
 from app.item.cruds import crud_item
 from app.item.schemas import ItemCreateSchema, ItemUpdateSchema
-from app.tests.user.utils import create_random_user
 from app.tests.utils.utils import random_lower_string
+from app.tests.factories import UserFactory
 
 
 def test_create_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)
-    user = create_random_user(db)
+    user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)
     assert item.title == title
     assert item.description == description
@@ -19,7 +19,7 @@ def test_get_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)
-    user = create_random_user(db)
+    user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)
     stored_item = crud_item.get(db=db, id=item.id)
     assert stored_item
@@ -33,7 +33,7 @@ def test_update_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)
-    user = create_random_user(db)
+    user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)
     description2 = random_lower_string()
     item_update = ItemUpdateSchema(description=description2)
@@ -48,7 +48,7 @@ def test_delete_item(db):
     title = random_lower_string()
     description = random_lower_string()
     item_in = ItemCreateSchema(title=title, description=description)
-    user = create_random_user(db)
+    user = UserFactory()
     item = crud_item.create_with_owner(db=db, obj_in=item_in, owner_id=user.id)
     item2 = crud_item.remove(db=db, id=item.id)
     item3 = crud_item.get(db=db, id=item.id)
