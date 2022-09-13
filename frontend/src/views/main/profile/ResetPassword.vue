@@ -1,5 +1,5 @@
 <template>
-  <h1>This is an start page</h1>
+  <h1>This is an reset password page</h1>
 </template>
 
 <style>
