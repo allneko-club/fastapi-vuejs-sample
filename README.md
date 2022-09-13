@@ -1,5 +1,23 @@
 # fastapi
 
+"Full Stack FastAPI and PostgreSQL"で作成したプロジェクト
+
+扱いやすい様に主に以下の項目を修正中
+
+* python3.10で導入された型ヒントの構文に変更
+* ドメイン駆動設計風にリファクタリング
+* 利用パッケージを最新化
+
+### 対応中
+* frontendのリファクタリング
+* dockerファイルの修正
+* scriptsの修正
+
+---
+以下はプロジェクト作成時に作成されたテキスト
+
+ファイルに変更を加えたため動作しないコードも存在する
+
 ## Backend Requirements
 
 * [Docker](https://www.docker.com/).
