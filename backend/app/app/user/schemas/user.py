@@ -21,6 +21,7 @@ class UserUpdateSchema(UserSchemaBase):
 
 class UserInDBSchemaBase(UserSchemaBase):
     id: int | None = None
+    items: list[ItemSchema] = []
 
     class Config:
         orm_mode = True
@@ -29,10 +30,6 @@ class UserInDBSchemaBase(UserSchemaBase):
 class UserSchema(UserInDBSchemaBase):
     """
     apiで返すためのモデル
-    passwordやhashed_passwordはセキュリティーのため扱わない
+    passwordやhashed_passwordはセキュリティーのため含めない
     """
-    items: list[ItemSchema] = []
-
-
-class UserInDBSchema(UserInDBSchemaBase):
-    hashed_password: str
+    pass
