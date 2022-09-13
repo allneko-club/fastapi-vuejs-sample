@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 
 from app.core.dependencies import get_db
 from app.core.config import settings
-from app.core.db.database import Base
+from app.core.database import Base
 from app.main import app
 from app.tests.utils.utils import get_superuser_token_headers
 from app.initial_data import init_db

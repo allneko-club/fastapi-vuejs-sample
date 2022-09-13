@@ -1,7 +1,7 @@
 import logging
 from sqlalchemy.orm import Session
 
-from app.core.db.database import Base, SessionLocal, engine
+from app.core.database import Base, SessionLocal, engine
 from app.user.cruds import crud_user
 from app.core.config import settings
 from app.user.schemas import UserCreateSchema

@@ -20,7 +20,11 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
-from app.core.db import Base  # noqa
+from app.core.database import Base  # noqa
+# Import all the models, so that Base has them
+# before being imported by Alembic
+from app.item.models import Item  # noqa
+from app.user.models import User  # noqa
 
 target_metadata = Base.metadata
 
@@ -36,7 +40,6 @@ def get_url():
     server = os.getenv("POSTGRES_SERVER", "db")
     db = os.getenv("POSTGRES_DB", "app")
     return f"postgresql://{user}:{password}@{server}/{db}"
-
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
