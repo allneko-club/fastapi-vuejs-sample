@@ -1,13 +1,8 @@
-<script setup>
-</script>
-
 <template>
   <h2>Password Recovery</h2>
   <p>A password recovery email will be sent to the registered account</p>
 
   <form @submit="onSubmit">
-<!--    <input v-model="email" name="email" type="email" />-->
-<!--    <span>{{ errors.email }}</span>-->
     <TextInput
       name="email"
       type="email"
@@ -16,7 +11,6 @@
     />
     <button>Recover Password</button>
   </form>
-
 </template>
 
 <script>

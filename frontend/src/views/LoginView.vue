@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <h1>Login</h1>
-     <form @submit="onSubmit">
+    <form @submit="onSubmit">
       <div>
         <TextInput
           name="username"
@@ -17,8 +17,9 @@
         />
       </div>
       <button type="submit">Login</button>
-     </form>
-</div>
+    </form>
+    <router-link :to="{ name: 'recover-password'}">recover-password</router-link>
+  </div>
 </template>
 
 <script>
