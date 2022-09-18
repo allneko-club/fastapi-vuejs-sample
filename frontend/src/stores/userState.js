@@ -1,7 +1,7 @@
 import {computed, ref} from "vue";
 import {defineStore} from 'pinia';
 
-import router from '../router';
+import router from '@/router';
 import {api} from "@/api";
 import {getLocalToken, removeLocalToken, saveLocalToken} from '@/utils';
 
@@ -44,7 +44,7 @@ export const userAuthStore = defineStore('auth', () => {
                 logInError.value = false;
                 await actionGetUserProfile();
                 await actionRouteLoggedIn();
-                await router.push('/main/dashboard');
+                await router.push({name: 'private-dashboard'});
             } else {
                 await this.actionLogOut();
             }
@@ -77,6 +77,7 @@ export const userAuthStore = defineStore('auth', () => {
             userProfile.value = response.data;
             removeNotification(loadingNotification);
             addNotification({content: 'Profile successfully updated', color: 'success'});
+            await router.push({name: 'private-account'});
         } catch (error) {
             await actionCheckApiError(error);
         }
@@ -124,7 +125,7 @@ export const userAuthStore = defineStore('auth', () => {
 
     function actionRouteLogOut() {
         if (router.currentRoute.path !== '/login') {
-            router.push('/login');
+            router.push({name: 'login'});
         }
     }
 
@@ -138,7 +139,7 @@ export const userAuthStore = defineStore('auth', () => {
 
     function actionRouteLoggedIn() {
         if (router.currentRoute.path === '/login' || router.currentRoute.path === '/') {
-            router.push('/main');
+            router.push({name: 'private-dashboard'});
         }
     }
 
@@ -152,7 +153,6 @@ export const userAuthStore = defineStore('auth', () => {
     }
 
     async function passwordRecovery(username) {
-        console.log('passwordRecovery');
         try {
             const response = (await Promise.all([
                 api.passwordRecovery(username),

@@ -13,7 +13,7 @@ const schema = yup.object({
 
 const formValues = {
   email: authStore.userProfile.email,
-  name: authStore.userProfile.fullName,
+  name: authStore.userProfile.full_name,
 };
 
 const { useFieldModel, errors, handleSubmit } = useForm({
@@ -25,13 +25,11 @@ const [fullName, email] = useFieldModel(['fullName', 'email']);
 
 const onSubmit = handleSubmit((values) => {
   const authStore = userAuthStore();
-  const updatedProfile = {};
-  updatedProfile.full_name = values.fullName;
-  updatedProfile.email = values.email;
+  const updatedProfile = {
+    full_name: values.fullName,
+    email: values.email,
+  };
   authStore.actionUpdateUserProfile(updatedProfile);
-  // todo リダイレクトしたいがなぜかrouterが読み込めない
-  // const router = useRouter();
-  // router.push('/main/account');
 });
 </script>
 

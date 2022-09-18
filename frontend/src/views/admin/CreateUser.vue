@@ -42,7 +42,7 @@ const onSubmit = handleSubmit((values) => {
   store.actionCreateUser(data);
   // todo リダイレクトしたいがなぜかrouterが読み込めない
   // const router = useRouter();
-  // router.push('/main/account');
+  // router.push({name: 'private-account'});
 });
 </script>
 <template>

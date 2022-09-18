@@ -11,7 +11,7 @@ export default {
     const router = useRouter();
     const authStore = userAuthStore();
     if (!authStore.isLoggedIn) {
-      router.push('/login');
+      router.push({name: 'login'});
     }
   }
 }

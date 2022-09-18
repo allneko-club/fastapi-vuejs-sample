@@ -56,9 +56,6 @@ const onSubmit = handleSubmit((values) => {
     data.password = values.password1;
   }
   store.actionUpdateUser(data);
-  // todo リダイレクトしたいがなぜかrouterが読み込めない
-  // const router = useRouter();
-  // router.push('/main/account');
 });
 </script>
 <template>

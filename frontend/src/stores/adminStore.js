@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 
 import { api } from "@/api";
 import {userAuthStore} from "@/stores/userState";
+import router from "@/router";
 
 export const adminStore = defineStore('admin', () => {
     // properties
@@ -46,6 +47,7 @@ export const adminStore = defineStore('admin', () => {
             setUser(response.data);
             authStore.removeNotification(loadingNotification);
             authStore.addNotification({ content: 'User successfully updated', color: 'success' });
+            router.push({name: 'admin-users-update'});
         } catch (error) {
             await authStore.actionCheckApiError(error);
         }
