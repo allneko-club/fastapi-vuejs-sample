@@ -1,25 +1,19 @@
-<script setup>
-import { RouterLink, RouterView } from "vue-router";
-import Header from "./components/Header.vue";
-</script>
-
 <template>
 
   <Header />
-  <RouterView />
+  <router-view></router-view>
+<!--  <NotificationsManager />-->
 
 </template>
 
 <script>
+import Header from "@/components/Header.vue";
+// import NotificationsManager from "@/components/NotificationsManager";
 
 export default {
   name: 'App',
-  data() {
-  },
-  methods: {
-  }
+  components: {Header}
 }
-
 </script>
 
 <style scoped>

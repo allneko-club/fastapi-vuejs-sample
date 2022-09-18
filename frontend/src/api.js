@@ -32,10 +32,13 @@ export const api = {
   async createUser(token, data) {
     return axios.post(`${apiUrl}/api/users/`, data, authHeaders(token));
   },
+  async deleteUser(token, userId) {
+    return axios.delete(`${apiUrl}/api/users/${userId}`, authHeaders(token));
+  },
   async passwordRecovery(email) {
     return axios.post(`${apiUrl}/api/password-recovery/${email}`);
   },
-  async resetPassword(password, token) {
+  async updatePassword(password, token) {
     return axios.post(`${apiUrl}/api/reset-password/`, {
       new_password: password,
       token,
