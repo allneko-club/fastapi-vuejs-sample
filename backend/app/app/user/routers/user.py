@@ -129,3 +129,14 @@ def update_user(
         raise HTTPException(status_code=404, detail="User not found")
     user = crud_user.update(db, db_obj=user, obj_in=user_in)
     return user
+
+
+@router.delete("/{user_id}")
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_superuser),
+):
+    crud_user.remove(db, id=user_id)
+    # todo 仮のreturn 何をreturnするべきか
+    return {"msg": "ok"}
