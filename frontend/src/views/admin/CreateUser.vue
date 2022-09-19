@@ -1,89 +1,80 @@
-<script setup>
-import {useRouter} from "vue-router";
-import {useForm} from "vee-validate";
-import * as yup from 'yup';
-
-import {userAuthStore} from "@/stores/userState";
-import {adminStore} from "@/stores/adminStore";
-const authStore = userAuthStore();
-
-
-const schema = yup.object({
-  fullName: yup.string(),
-  email: yup.string().required().email(),
-  isActive: yup.boolean(),
-  isSuperuser: yup.boolean(),
-  password1: yup.string().required().label('password'),
-  password2: yup.string().required().label('password (confirm)')
-      .oneOf([yup.ref('password1')], 'Passwords do not match'),
-});
-
-const formValues = {
-  isActive: true,
-  isSuperuser: false,
-};
-
-const { errors, useFieldModel, handleSubmit } = useForm({
-  validationSchema: schema,
-  initialValues: formValues,
-});
-
-const [fullName, email, isActive, isSuperuser, password1, password2] = useFieldModel([
-    'fullName', 'email', 'isActive', 'isSuperuser','password1', 'password2']);
-
-const onSubmit = handleSubmit((values) => {
-  const store = adminStore();
-  const data = {};
-  data.full_name = values.fullName;
-  data.email = values.email;
-  data.isActive = values.isActive;
-  data.isSuperuser = values.isSuperuser;
-  data.password = values.password1;
-  store.actionCreateUser(data);
-  // todo リダイレクトしたいがなぜかrouterが読み込めない
-  // const router = useRouter();
-  // router.push({name: 'private-account'});
-});
-</script>
 <template>
   <h1>Create User</h1>
 
-  <form @submit="onSubmit">
-    <div>
-      <label>fullName</label>
-      <input v-model="fullName" name="fullName" />
-      <span>{{ errors.fullName }}</span>
-    </div>
-    <div>
-      <label>email</label>
-      <input v-model="email" name="email" type="email" />
-      <span>{{ errors.email }}</span>
-    </div>
-    <div>
-      <label></label>
-      <input v-model="isActive" name="isActive" type="checkbox"/>
-      <span>{{ errors.isActive }}</span>
-    </div>
-    <div>
-      <label></label>
-      <input v-model="isSuperuser" name="isSuperuser" type="checkbox"/>
-      <span>{{ errors.isSuperuser }}</span>
-    </div>
-    <div>
-      <label></label>
-      <input v-model="password1" name="password1" type="password"/>
-      <span>{{ errors.password1 }}</span>
-    </div>
-    <div>
-      <label></label>
-      <input v-model="password2" name="password2" type="password"/>
-      <span>{{ errors.password2 }}</span>
-    </div>
+  <Form @submit="onSubmit" :validation-schema="schema">
+    <TextInput
+      name="name"
+      type="text"
+      label="name"
+    />
+    <TextInput
+      name="email"
+      type="email"
+      label="email"
+    />
+    <SingleCheckbox
+      name="isActive"
+      type="checkbox"
+      label="isActive"
+    />
+    <SingleCheckbox
+      name="isSuperuser"
+      type="checkbox"
+      label="isSuperuser"
+    />
+    <TextInput
+      name="password1"
+      type="password"
+      label="password"
+    />
+    <TextInput
+      name="password2"
+      type="password"
+      label="password (confirm)"
+    />
     <button>Save</button>
-  </form>
+  </Form>
 <!--  <v-btn @click="back">back</v-btn>-->
 </template>
 
 <script>
-export default {}
+import {Form} from "vee-validate";
+import * as yup from 'yup';
+
+import {userAuthStore} from "@/stores/userState";
+import {adminStore} from "@/stores/adminStore";
+import TextInput from "@/components/fields/TextInput.vue";
+import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
+
+export default {
+  components: {Form, TextInput, SingleCheckbox},
+  setup(){
+    const authStore = userAuthStore();
+    const schema = yup.object({
+      name: yup.string(),
+      email: yup.string().required().email(),
+      isActive: yup.boolean(),
+      isSuperuser: yup.boolean(),
+      password1: yup.string().required().label('password'),
+      password2: yup.string().required().label('password (confirm)')
+          .oneOf([yup.ref('password1')], 'Passwords do not match'),
+    });
+
+    const onSubmit = (values) => {
+      const store = adminStore();
+      const data = {};
+      data.name = values.name;
+      data.email = values.email;
+      data.is_active = !!values.isActive ;
+      data.is_superuser = !!values.isSuperuser;
+      data.password = values.password1;
+      store.actionCreateUser(data);
+    };
+
+    return {
+      schema,
+      onSubmit,
+    }
+  }
+}
 </script>

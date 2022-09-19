@@ -12,7 +12,7 @@ export const adminStore = defineStore('admin', () => {
 
     // getters
     const getUserById = computed(() => (userId) => {
-        const filteredUsers = state.users.filter((user) => user.id === userId);
+        const filteredUsers = users.value.filter((user) => user.id === Number(userId));
         if (filteredUsers.length > 0) {
             return { ...filteredUsers[0] };
         }
@@ -23,6 +23,10 @@ export const adminStore = defineStore('admin', () => {
         const new_users = users.value.filter((user) => user.id !== payload.id);
         new_users.push(payload);
         users.value.users = new_users;
+    }
+
+    function deleteUser(payload) {
+        users.value.users = users.value.filter((user) => user.id !== payload.id);
     }
 
     async function actionGetUsers() {
@@ -36,12 +40,12 @@ export const adminStore = defineStore('admin', () => {
         }
     }
 
-    async function actionUpdateUser(payload) {
+    async function actionUpdateUser(userId, payload) {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
             authStore.addNotification({ content: loadingNotification});
             const response = (await Promise.all([
-                api.updateUser(authStore.token, payload.id, payload.user),
+                api.updateUser(authStore.token, userId, payload),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             setUser(response.data);
@@ -64,6 +68,7 @@ export const adminStore = defineStore('admin', () => {
             setUser(response.data);
             authStore.removeNotification(loadingNotification);
             authStore.addNotification({ content: 'User successfully created', color: 'success' });
+            router.push({name: 'admin-users'});
         } catch (error) {
             await authStore.actionCheckApiError(error);
         }
@@ -77,7 +82,7 @@ export const adminStore = defineStore('admin', () => {
                 api.deleteUser(authStore.token, userId),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
-            // setUser(response.data); todo removeUserメソッドを追加
+            deleteUser(response.data);
             authStore.addNotification({ content: 'User successfully deleted', color: 'success' });
         } catch (error) {
             await authStore.actionCheckApiError(error);

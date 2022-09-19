@@ -37,12 +37,12 @@ export default {
 
     const initialValues = {
       email: authStore.userProfile.email,
-      name: authStore.userProfile.full_name,
+      name: authStore.userProfile.name,
     };
 
     const onSubmit = async (values) => {
       await authStore.actionUpdateUserProfile(values);
-    };
+    }
 
     return {
       initialValues,
