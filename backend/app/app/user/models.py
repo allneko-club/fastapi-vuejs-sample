@@ -3,6 +3,7 @@ from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
+from app.item.models import Item
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -10,7 +11,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, index=True)
+    name = Column(String, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
