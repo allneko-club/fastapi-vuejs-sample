@@ -22,20 +22,9 @@ export const userAuthStore = defineStore('auth', () => {
     )
 
     // actions
-    function addNotification(payload) {
-        console.log('addNotification: {}', payload);
-        notifications.value.push(payload);
-    }
-
-    function removeNotification(payload) {
-        notifications.value = notifications.value.filter((notification) => notification !== payload);
-    }
-
     async function actionLogIn(username, password) {
-        console.log('action login'+username+ password)
         try {
             const response = await api.logInGetToken(username, password);
-            console.log(response);
             const access_token = response.data.access_token;
             if (access_token) {
                 saveLocalToken(access_token);
@@ -58,7 +47,6 @@ export const userAuthStore = defineStore('auth', () => {
         try {
             const response = await api.getMe(token.value);
             if (response.data) {
-                console.log(response.data);
                 userProfile.value = response.data;
             }
         } catch (error) {
@@ -118,7 +106,6 @@ export const userAuthStore = defineStore('auth', () => {
     }
 
     async function actionUserLogOut() {
-        console.log('log out');
         await actionLogOut();
         addNotification({content: 'Logged out', color: 'success'});
     }
@@ -130,8 +117,6 @@ export const userAuthStore = defineStore('auth', () => {
     }
 
     async function actionCheckApiError(payload) {
-        console.log('actionCheckApiError');
-        console.log(payload);
         if (payload.response.status === 401) {
             await this.actionLogOut();
         }
@@ -141,15 +126,6 @@ export const userAuthStore = defineStore('auth', () => {
         if (router.currentRoute.path === '/login' || router.currentRoute.path === '/') {
             router.push({name: 'private-dashboard'});
         }
-    }
-
-    async function actionRemoveNotification(payload) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                removeNotification(payload.notification);
-                resolve(true);
-            }, payload.timeout);
-        });
     }
 
     async function passwordRecovery(username) {
@@ -180,6 +156,24 @@ export const userAuthStore = defineStore('auth', () => {
             removeNotification(loadingNotification);
             addNotification({color: 'error', content: 'Error resetting password'});
         }
+    }
+
+    function addNotification(payload) {
+        console.log('addNotification: {}', payload);
+        notifications.value.push(payload);
+    }
+
+    function removeNotification(payload) {
+        notifications.value = notifications.value.filter((notification) => notification !== payload);
+    }
+
+    async function actionRemoveNotification(payload) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                removeNotification(payload.notification);
+                resolve(true);
+            }, payload.timeout);
+        });
     }
 
     return {
