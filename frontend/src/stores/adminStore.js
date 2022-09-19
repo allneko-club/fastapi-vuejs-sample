@@ -25,8 +25,8 @@ export const adminStore = defineStore('admin', () => {
         users.value.users = new_users;
     }
 
-    function deleteUser(payload) {
-        users.value.users = users.value.filter((user) => user.id !== payload.id);
+    function deleteUser(userId) {
+        users.value.users = users.value.filter((user) => user.id !== userId);
     }
 
     async function actionGetUsers() {
@@ -82,7 +82,7 @@ export const adminStore = defineStore('admin', () => {
                 api.deleteUser(authStore.token, userId),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
-            deleteUser(response.data);
+            deleteUser(userId);
             authStore.addNotification({ content: 'User successfully deleted', color: 'success' });
         } catch (error) {
             await authStore.actionCheckApiError(error);
