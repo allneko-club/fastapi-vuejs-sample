@@ -23,12 +23,12 @@ import { Form } from "vee-validate";
 import * as yup from 'yup';
 
 import TextInput from "@/components/fields/TextInput.vue";
-import {userAuthStore} from "@/stores/userState";
+import {useAuthStore} from "@/stores/useAuthStore";
 
 export default {
   components: {Form, TextInput},
   setup(){
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
 
     const schema = yup.object({
       name: yup.string().required(),

@@ -1,24 +1,24 @@
 import {computed, ref} from "vue";
 import {defineStore} from 'pinia';
 
-export const notificationStore = defineStore('notification', () => {
+
+export const useNotificationStore = defineStore('notification', () => {
     // properties
     const notifications = ref([])
 
     // getters
-    const firstNotification = computed(() => notifications.value.length > 0 && notifications.value[0])
+    const hasNotification = computed(() => notifications.value.length > 0)
 
     // actions
     function add(payload) {
-        console.log('addNotification: {}', payload);
         notifications.value.push(payload);
     }
 
     function remove(payload) {
-        notifications.value = notifications.value.filter((notification) => notification !== payload);
+        notifications.value = notifications.value.filter(notification => notification !== payload);
     }
 
-    async function actionRemoveNotification(payload) {
+    async function removeNotification(payload) {
         return new Promise((resolve) => {
             setTimeout(() => {
                 remove(payload.notification);
@@ -26,10 +26,5 @@ export const notificationStore = defineStore('notification', () => {
             }, payload.timeout);
         });
     }
-
-    return {
-        add,
-        remove,
-        actionRemoveNotification,
-    }
+    return {hasNotification, add, remove, removeNotification}
 })

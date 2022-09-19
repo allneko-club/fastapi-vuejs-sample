@@ -42,14 +42,14 @@ import {useRoute} from "vue-router";
 import {Form} from "vee-validate";
 import * as yup from 'yup';
 
-import {adminStore} from "@/stores/adminStore";
+import {useAdminStore} from "@/stores/useAdminStore";
 import TextInput from "@/components/fields/TextInput.vue";
 import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
   setup(){
-    const store = adminStore();
+    const store = useAdminStore();
     const route = useRoute();
 
     const userId = route.params.id;
@@ -73,7 +73,7 @@ export default {
     };
 
     const onSubmit = (values) => {
-      const store = adminStore();
+      const store = useAdminStore();
       const data = {};
       if(values.name){
         data.name = values.name;

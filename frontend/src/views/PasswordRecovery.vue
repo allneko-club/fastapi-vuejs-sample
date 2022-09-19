@@ -16,14 +16,14 @@
 <script>
 import { Form } from "vee-validate";
 import * as yup from 'yup';
-import { userAuthStore } from "@/stores/userState";
+import { useAuthStore } from "@/stores/useAuthStore";
 import TextInput from "@/components/fields/TextInput.vue";
 
 export default {
   name: 'PasswordRecovery',
   components: {Form, TextInput},
   setup() {
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
     const schema = yup.object({email: yup.string().email().required()});
     const onSubmit = async (values) => {
       await authStore.passwordRecovery(values.email)

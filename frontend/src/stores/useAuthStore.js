@@ -4,15 +4,15 @@ import {defineStore} from 'pinia';
 import router from '@/router';
 import {api} from "@/api";
 import {getLocalToken, removeLocalToken, saveLocalToken} from '@/utils';
-import {notificationStore} from "@/stores/notificationState";
+import {useNotificationStore} from "@/stores/useNotificationStore";
 
-export const userAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('auth', () => {
     // properties
     const logInError = ref(false)
     const userProfile = ref(null)
     const token = ref('')
     const isLoggedIn = ref(false)
-    const notificationStore = notificationStore()
+    const notificationStore = useNotificationStore();
 
     // getters
     const hasAdminAccess = computed(() =>
@@ -24,6 +24,7 @@ export const userAuthStore = defineStore('auth', () => {
         try {
             const response = await api.logInGetToken(username, password);
             const access_token = response.data.access_token;
+            console.log(access_token);
             if (access_token) {
                 saveLocalToken(access_token);
                 token.value = access_token;

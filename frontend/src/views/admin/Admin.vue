@@ -1,17 +1,19 @@
 <template>
-  <h5>admin page</h5>
+  <h5>admin page <router-link :to="{ name: 'home'}">Back to Home</router-link></h5>
   <router-link :to="{ name: 'admin-users'}">users</router-link><br>
   <router-view />
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
-import { userAuthStore } from "@/stores/userState";
+import { useAuthStore } from "@/stores/useAuthStore";
+import NotificationsManager from "@/components/NotificationsManager.vue";
 
 export default {
+  components: {NotificationsManager},
   setup() {
     const router = useRouter();
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
     if (!authStore.hasAdminAccess) {
       router.push({name: 'home'});
     }

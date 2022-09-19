@@ -25,14 +25,14 @@
 <script>
 import { Form } from "vee-validate";
 import * as yup from 'yup';
-import { userAuthStore } from "@/stores/userState";
+import { useAuthStore } from "@/stores/useAuthStore";
 import TextInput from "@/components/fields/TextInput.vue";
 
 export default {
   name: 'Login',
   components: {Form, TextInput},
   setup(){
-      const authStore = userAuthStore();
+      const authStore = useAuthStore();
 
       // 各fieldはTextInput内のuseField()で定義するが、バリデーションはuseForm()で定義する
       // Define validation schema

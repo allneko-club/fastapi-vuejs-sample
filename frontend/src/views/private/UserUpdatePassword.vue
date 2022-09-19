@@ -22,7 +22,7 @@
 import {Form} from "vee-validate";
 import * as yup from 'yup';
 
-import {userAuthStore} from "@/stores/userState";
+import {useAuthStore} from "@/stores/useAuthStore";
 import TextInput from "@/components/fields/TextInput.vue";
 
 export default {
@@ -33,7 +33,7 @@ export default {
       password2: yup.string().required(),
     });
 
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
     const onSubmit = (values) => {
       authStore.actionUpdateUserProfile({password: values.password1});
     };

@@ -41,15 +41,15 @@
 import {Form} from "vee-validate";
 import * as yup from 'yup';
 
-import {userAuthStore} from "@/stores/userState";
-import {adminStore} from "@/stores/adminStore";
+import {useAuthStore} from "@/stores/useAuthStore";
+import {useAdminStore} from "@/stores/useAdminStore";
 import TextInput from "@/components/fields/TextInput.vue";
 import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
   setup(){
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
     const schema = yup.object({
       name: yup.string(),
       email: yup.string().required().email(),
@@ -61,7 +61,7 @@ export default {
     });
 
     const onSubmit = (values) => {
-      const store = adminStore();
+      const store = useAdminStore();
       const data = {};
       data.name = values.name;
       data.email = values.email;

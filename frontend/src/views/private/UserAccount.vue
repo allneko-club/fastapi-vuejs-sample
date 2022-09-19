@@ -12,12 +12,12 @@
 </template>
 
 <script>
-import { userAuthStore } from "@/stores/userState";
+import { useAuthStore } from "@/stores/useAuthStore";
 import {computed} from "vue";
 
 export default {
   setup(){
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
     authStore.actionGetUserProfile();
     return {
       userProfile: computed(() => authStore.userProfile)

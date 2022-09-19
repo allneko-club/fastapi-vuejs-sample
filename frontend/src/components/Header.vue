@@ -17,12 +17,12 @@
 </template>
 
 <script>
-import {userAuthStore} from "@/stores/userState";
+import {useAuthStore} from "@/stores/useAuthStore";
 
 export default {
   setup() {
     const appName = import.meta.env.VITE_APP_NAME;
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
     return {
       appName,
       authStore,

@@ -10,11 +10,11 @@
 
 <script>
 import {computed} from "vue";
-import {adminStore} from "@/stores/adminStore";
+import {useAdminStore} from "@/stores/useAdminStore";
 
 export default {
   setup(){
-    const store = adminStore();
+    const store = useAdminStore();
     store.actionGetUsers();
     return {
       store,

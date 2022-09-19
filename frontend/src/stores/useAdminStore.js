@@ -2,13 +2,13 @@ import { ref, computed} from "vue";
 import { defineStore } from 'pinia';
 
 import { api } from "@/api";
-import {userAuthStore} from "@/stores/userState";
+import {useAuthStore} from "@/stores/useAuthStore";
 import router from "@/router";
 
-export const adminStore = defineStore('admin', () => {
+export const useAdminStore = defineStore('admin', () => {
     // properties
     const users = ref([])
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
 
     // getters
     const getUserById = computed(() => (userId) => {

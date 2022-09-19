@@ -1,15 +1,20 @@
 <template>
+  <NotificationsManager />
+  <Header />
   <router-view></router-view>
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
-import { userAuthStore } from "@/stores/userState";
+import { useAuthStore } from "@/stores/useAuthStore";
+import NotificationsManager from "@/components/NotificationsManager.vue";
+import Header from "@/components/Header.vue";
 
 export default {
+  components: {NotificationsManager, Header},
   setup() {
     const router = useRouter();
-    const authStore = userAuthStore();
+    const authStore = useAuthStore();
     if (!authStore.isLoggedIn) {
       router.push({name: 'login'});
     }
