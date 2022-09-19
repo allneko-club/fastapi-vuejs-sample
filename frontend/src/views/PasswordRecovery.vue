@@ -2,7 +2,7 @@
   <h2>Password Recovery</h2>
   <p>A password recovery email will be sent to the registered account</p>
 
-  <form @submit="onSubmit">
+  <Form @submit="onSubmit" :validation-schema="schema">
     <TextInput
       name="email"
       type="email"
@@ -10,34 +10,29 @@
       placeholder="Your email"
     />
     <button>Recover Password</button>
-  </form>
+  </Form>
 </template>
 
 <script>
-import {useForm} from "vee-validate";
+import { Form } from "vee-validate";
 import * as yup from 'yup';
-
-import {userAuthStore} from "@/stores/userState";
+import { userAuthStore } from "@/stores/userState";
 import TextInput from "@/components/fields/TextInput.vue";
 
 export default {
   name: 'PasswordRecovery',
-  components: {TextInput},
+  components: {Form, TextInput},
   setup() {
     const authStore = userAuthStore();
-
-    const schema = yup.object({
-      email: yup.string().email().required(),
-    });
-    const { handleSubmit } = useForm({validationSchema: schema});
-    const onSubmit = handleSubmit((values) => {
-      authStore.passwordRecovery(values.email);
-    });
+    const schema = yup.object({email: yup.string().email().required()});
+    const onSubmit = async (values) => {
+      await authStore.passwordRecovery(values.email)
+    };
     return {
+      schema,
       onSubmit,
     }
   }
-
 }
 </script>
 

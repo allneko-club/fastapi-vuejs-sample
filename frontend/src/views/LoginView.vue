@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <h1>Login</h1>
-    <form @submit="onSubmit">
+    <Form @submit="onSubmit" :validation-schema="schema">
       <div>
         <TextInput
           name="username"
@@ -17,20 +17,20 @@
         />
       </div>
       <button type="submit">Login</button>
-    </form>
+    </Form>
     <router-link :to="{ name: 'recover-password'}">recover-password</router-link>
   </div>
 </template>
 
 <script>
-import {useForm} from "vee-validate";
+import { Form } from "vee-validate";
 import * as yup from 'yup';
-import {userAuthStore} from "@/stores/userState";
+import { userAuthStore } from "@/stores/userState";
 import TextInput from "@/components/fields/TextInput.vue";
 
 export default {
   name: 'Login',
-  components: {TextInput},
+  components: {Form, TextInput},
   setup(){
       const authStore = userAuthStore();
 
@@ -40,12 +40,13 @@ export default {
         username: yup.string().required(),
         password: yup.string().required(),
       });
-      const { handleSubmit } = useForm({validationSchema: schema});
-      const onSubmit = handleSubmit(async (values) => {
+
+      const onSubmit = async (values) => {
         await authStore.actionLogIn(values.username, values.password)
-      });
+      };
 
       return {
+        schema,
         onSubmit,
       }
   },
