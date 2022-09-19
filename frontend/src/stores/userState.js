@@ -4,19 +4,17 @@ import {defineStore} from 'pinia';
 import router from '@/router';
 import {api} from "@/api";
 import {getLocalToken, removeLocalToken, saveLocalToken} from '@/utils';
+import {notificationStore} from "@/stores/notificationState";
 
 export const userAuthStore = defineStore('auth', () => {
     // properties
     const logInError = ref(false)
-    const dashboardMiniDrawer = ref(false)
-    const dashboardShowDrawer = ref(true)
     const userProfile = ref(null)
     const token = ref('')
     const isLoggedIn = ref(false)
-    const notifications = ref([])
+    const notificationStore = notificationStore()
 
     // getters
-    const firstNotification = computed(() => notifications.value.length > 0 && notifications.value[0])
     const hasAdminAccess = computed(() =>
         userProfile.value && userProfile.value.is_superuser && userProfile.value.is_active
     )
@@ -57,14 +55,14 @@ export const userAuthStore = defineStore('auth', () => {
     async function actionUpdateUserProfile(payload) {
         try {
             const loadingNotification = {content: 'saving', showProgress: true};
-            addNotification(loadingNotification);
+            notificationStore.add(loadingNotification);
             const response = (await Promise.all([
                 api.updateMe(token.value, payload),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             userProfile.value = response.data;
-            removeNotification(loadingNotification);
-            addNotification({content: 'Profile successfully updated', color: 'success'});
+            notificationStore.remove(loadingNotification);
+            notificationStore.add({content: 'Profile successfully updated', color: 'success'});
             await router.push({name: 'private-account'});
         } catch (error) {
             await actionCheckApiError(error);
@@ -107,7 +105,7 @@ export const userAuthStore = defineStore('auth', () => {
 
     async function actionUserLogOut() {
         await actionLogOut();
-        addNotification({content: 'Logged out', color: 'success'});
+        notificationStore.add({content: 'Logged out', color: 'success'});
     }
 
     function actionRouteLogOut() {
@@ -134,53 +132,29 @@ export const userAuthStore = defineStore('auth', () => {
                 api.passwordRecovery(username),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
-            addNotification({content: 'Password recovery email sent', color: 'success'});
+            notificationStore.add({content: 'Password recovery email sent', color: 'success'});
             await actionLogOut();
         } catch (error) {
-            addNotification({color: 'error', content: 'Incorrect username'});
+            notificationStore.add({color: 'error', content: 'Incorrect username'});
         }
     }
 
     async function updatePassword(payload) {
-        const loadingNotification = {content: 'Resetting password', showProgress: true};
         try {
-            addNotification(loadingNotification);
             await Promise.all([
                 api.updatePassword(payload.password, payload.token),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]);
-            removeNotification(loadingNotification);
-            addNotification({content: 'Password successfully reset', color: 'success'});
+            notificationStore.add({content: 'Password successfully reset', color: 'success'});
             await actionLogOut();
         } catch (error) {
-            removeNotification(loadingNotification);
-            addNotification({color: 'error', content: 'Error resetting password'});
+            notificationStore.add({color: 'error', content: 'Error resetting password'});
         }
     }
 
-    function addNotification(payload) {
-        console.log('addNotification: {}', payload);
-        notifications.value.push(payload);
-    }
-
-    function removeNotification(payload) {
-        notifications.value = notifications.value.filter((notification) => notification !== payload);
-    }
-
-    async function actionRemoveNotification(payload) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                removeNotification(payload.notification);
-                resolve(true);
-            }, payload.timeout);
-        });
-    }
-
     return {
-        isLoggedIn, token, logInError, userProfile, dashboardMiniDrawer, dashboardShowDrawer, notifications,
-        firstNotification,
+        isLoggedIn, token, logInError, userProfile,
         hasAdminAccess,
-        addNotification, removeNotification,
         actionLogIn, actionGetUserProfile, actionUpdateUserProfile,
         // actionCheckLoggedIn,
         // actionRemoveLogIn,
