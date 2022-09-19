@@ -7,7 +7,7 @@ const routes = [
       {
         path: 'users/',
         name: 'admin-users',
-        component: () => import('@/views/admin/AdminUsers.vue'),
+        component: () => import('@/views/admin/Users.vue'),
       },
       {
         path: 'users/update/:id',

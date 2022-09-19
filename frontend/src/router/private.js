@@ -23,7 +23,7 @@ const routes = [
       {
         path: 'account/update-password',
         name: 'private-account-update-password',
-        component: () => import('@/views/private/UserProfileUpdatePassword.vue'),
+        component: () => import('@/views/private/UserUpdatePassword.vue'),
       },
     ]
   },
