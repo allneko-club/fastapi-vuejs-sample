@@ -1,0 +1,47 @@
+<template>
+  <h5>change password</h5>
+  <p>Enter your new password below</p>
+
+  <Form @submit="onSubmit" :validation-schema="schema">
+    <TextInput
+      name="password1"
+      type="password"
+      label="password"
+    />
+    <TextInput
+      name="password2"
+      type="password"
+      label="password (confirm)"
+    />
+    <button>Change Password</button>
+  </Form>
+
+</template>
+
+<script>
+import {Form} from "vee-validate";
+import * as yup from 'yup';
+
+import {userAuthStore} from "@/stores/userState";
+import TextInput from "@/components/fields/TextInput.vue";
+
+export default {
+  components: {Form, TextInput},
+  setup(){
+    const schema = yup.object({
+      password1: yup.string().required(),
+      password2: yup.string().required(),
+    });
+
+    const authStore = userAuthStore();
+    const onSubmit = (values) => {
+      authStore.actionUpdateUserProfile({password: values.password1});
+    };
+
+    return {
+      schema,
+      onSubmit,
+    }
+  }
+}
+</script>
