@@ -4,7 +4,6 @@ import {useRouter} from 'vue-router'
 
 import {api} from "@/api";
 import {getLocalToken, removeLocalToken, saveLocalToken} from '@/localStorage';
-import {useNotificationStore} from "@/stores/useNotificationStore";
 
 export const useAuthStore = defineStore('auth', () => {
     // properties
@@ -12,7 +11,6 @@ export const useAuthStore = defineStore('auth', () => {
     const userProfile = ref(null)
     const token = ref('')
     const isLoggedIn = ref(false)
-    const notificationStore = useNotificationStore();
     const router = ref(useRouter());
 
     // getters
@@ -54,15 +52,12 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function updateUserProfile(payload) {
         try {
-            const loadingNotification = {content: 'saving', showProgress: true};
-            notificationStore.add(loadingNotification);
             const response = (await Promise.all([
                 api.updateMe(token.value, payload),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             userProfile.value = response.data;
-            notificationStore.remove(loadingNotification);
-            notificationStore.add({content: 'Profile successfully updated', color: 'success'});
+            console.log('Profile successfully updated (success)');
         } catch (error) {
             await checkApiError(error);
         }
@@ -105,7 +100,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function userLogout() {
         await logout();
-        notificationStore.add({content: 'Logged out', color: 'success'});
+        console.log('logged out (success)');
     }
 
     async function checkApiError(payload) {
@@ -126,10 +121,10 @@ export const useAuthStore = defineStore('auth', () => {
                 api.resetPassword(username),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
-            notificationStore.add({content: 'Password recovery email sent', color: 'success'});
+            console.log('Password recovery email sent (success)');
             await logout();
         } catch (error) {
-            notificationStore.add({color: 'error', content: 'Incorrect username'});
+            console.log('Incorrect (error)');
         }
     }
 
@@ -139,10 +134,10 @@ export const useAuthStore = defineStore('auth', () => {
                 api.updatePassword(payload.password, payload.token),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]);
-            notificationStore.add({content: 'Password successfully reset', color: 'success'});
+            console.log('Password successfully reset (success)');
             await logout();
         } catch (error) {
-            notificationStore.add({color: 'error', content: 'Error resetting password'});
+            console.log('Error resetting password (error)');
         }
     }
 
