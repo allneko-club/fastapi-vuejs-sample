@@ -1,6 +1,4 @@
 const env = import.meta.env.VITE_APP_ENV;
-console.log('env');
-console.log(import.meta.env);
 let envApiUrl = '';
 
 if (env === 'production') {
@@ -11,5 +9,5 @@ if (env === 'production') {
   envApiUrl = `http://${import.meta.env.VITE_APP_DOMAIN_DEV}`;
 }
 
-export const apiUrl = envApiUrl;
+export const apiUrl = envApiUrl+`${import.meta.env.VITE_ENDPOINT_PATH}`;
 export const appName = import.meta.env.VITE_APP_NAME;
