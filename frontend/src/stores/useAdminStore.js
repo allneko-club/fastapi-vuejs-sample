@@ -20,11 +20,11 @@ export const useAdminStore = defineStore('admin', () => {
     function setUser(payload) {
         const new_users = users.value.filter(user => user.id !== payload.id);
         new_users.push(payload);
-        users.value.users = new_users;
+        users.value = new_users;
     }
 
     function deleteUser(userId) {
-        users.value.users = users.value.filter(user => user.id !== userId);
+        users.value = users.value.filter(user => user.id !== userId);
     }
 
     async function actionGetUsers() {

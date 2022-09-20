@@ -50,7 +50,6 @@ import router from "@/router";
 export default {
   components: {Form, TextInput, SingleCheckbox},
   setup(){
-    const authStore = useAuthStore();
     const schema = yup.object({
       name: yup.string(),
       email: yup.string().required().email(),
@@ -61,7 +60,7 @@ export default {
           .oneOf([yup.ref('password1')], 'Passwords do not match'),
     });
 
-    const onSubmit = (values) => {
+    const onSubmit = async (values) => {
       const store = useAdminStore();
       const data = {};
       data.name = values.name;
@@ -69,8 +68,8 @@ export default {
       data.is_active = values.isActive;
       data.is_superuser = values.isSuperuser;
       data.password = values.password1;
-      store.actionCreateUser(data);
-      router.push({name: 'admin-users'});
+      await store.actionCreateUser(data);
+      await router.push({name: 'admin-users'});
     };
 
     return {

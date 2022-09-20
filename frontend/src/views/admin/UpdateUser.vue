@@ -73,7 +73,7 @@ export default {
       isSuperuser: user.is_superuser,
     };
 
-    const onSubmit = (values) => {
+    const onSubmit = async (values) => {
       const store = useAdminStore();
       const data = {};
       if(values.name){
@@ -87,8 +87,8 @@ export default {
       if(values.password1) {
         data.password = values.password1;
       }
-      store.actionUpdateUser(userId, data);
-      router.push({name: 'admin-users-update'});
+      await store.actionUpdateUser(userId, data);
+      await router.push({name: 'admin-users'});
     }
 
     return {

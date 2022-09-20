@@ -35,8 +35,8 @@ export default {
     });
 
     const authStore = useAuthStore();
-    const onSubmit = (values) => {
-      authStore.actionUpdateUserProfile({password: values.password1});
+    const onSubmit = async (values) => {
+      await authStore.actionUpdateUserProfile({password: values.password1});
       await router.push({name: 'private-profile'});
     };
 
