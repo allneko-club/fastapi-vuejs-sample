@@ -2,14 +2,15 @@ import { ref, computed} from "vue";
 import { defineStore } from 'pinia';
 
 import { api } from "@/api";
-import {useAuthStore} from "@/stores/useAuthStore";
 import router from "@/router";
+import {useAuthStore} from "@/stores/useAuthStore";
+import {useNotificationStore} from "@/stores/useNotificationStore";
 
 export const useAdminStore = defineStore('admin', () => {
     // properties
     const users = ref([])
     const authStore = useAuthStore();
-
+    const notificationStore = useNotificationStore();
     // getters
     const getUserById = computed(() => (userId) => {
         return users.value.find(user => user.id === Number(userId));
@@ -40,14 +41,14 @@ export const useAdminStore = defineStore('admin', () => {
     async function actionUpdateUser(userId, payload) {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
-            authStore.addNotification({ content: loadingNotification});
+            notificationStore.add({ content: loadingNotification});
             const response = (await Promise.all([
                 api.updateUser(authStore.token, userId, payload),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             setUser(response.data);
-            authStore.removeNotification(loadingNotification);
-            authStore.addNotification({ content: 'User successfully updated', color: 'success' });
+            notificationStore.remove(loadingNotification);
+            notificationStore.add({ content: 'User successfully updated', color: 'success' });
             router.push({name: 'admin-users-update'});
         } catch (error) {
             await authStore.actionCheckApiError(error);
@@ -57,14 +58,14 @@ export const useAdminStore = defineStore('admin', () => {
     async function actionCreateUser(payload) {
         try {
             const loadingNotification = { content: 'saving', showProgress: true };
-            authStore.addNotification({ content: loadingNotification});
+            notificationStore.add({ content: loadingNotification});
             const response = (await Promise.all([
                 api.createUser(authStore.token, payload),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             setUser(response.data);
-            authStore.removeNotification(loadingNotification);
-            authStore.addNotification({ content: 'User successfully created', color: 'success' });
+            notificationStore.remove(loadingNotification);
+            notificationStore.add({ content: 'User successfully created', color: 'success' });
             router.push({name: 'admin-users'});
         } catch (error) {
             await authStore.actionCheckApiError(error);
@@ -80,7 +81,7 @@ export const useAdminStore = defineStore('admin', () => {
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             deleteUser(userId);
-            authStore.addNotification({ content: 'User successfully deleted', color: 'success' });
+            notificationStore.add({ content: 'User successfully deleted', color: 'success' });
         } catch (error) {
             await authStore.actionCheckApiError(error);
         }

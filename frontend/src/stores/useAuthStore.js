@@ -34,11 +34,11 @@ export const useAuthStore = defineStore('auth', () => {
                 await actionRouteLoggedIn();
                 await router.push({name: 'private'});
             } else {
-                await this.actionLogOut();
+                await actionLogOut();
             }
         } catch (err) {
             logInError.value = true;
-            await this.actionLogOut();
+            await actionLogOut();
         }
     }
 
@@ -118,7 +118,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function actionCheckApiError(payload) {
         if (payload.response.status === 401) {
-            await this.actionLogOut();
+            await actionLogOut();
         }
     }
 
@@ -157,6 +157,7 @@ export const useAuthStore = defineStore('auth', () => {
     return {
         isLoggedIn,
         logInError,
+        token,
         userProfile,
         hasAdminAccess,
         actionLogIn,
