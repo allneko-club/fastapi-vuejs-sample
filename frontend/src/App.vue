@@ -1,13 +1,15 @@
 <template>
   <div id="app">
     <router-view></router-view>
+    <NotificationsManager />
   </div>
 </template>
 
 <script>
+import NotificationsManager from "@/components/NotificationsManager.vue";
 export default {
   name: "App",
-  setup() {}
+  components: {NotificationsManager},
 }
 </script>
 

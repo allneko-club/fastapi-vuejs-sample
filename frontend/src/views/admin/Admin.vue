@@ -5,20 +5,18 @@
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
 import { useAuthStore } from "@/stores/useAuthStore";
-import NotificationsManager from "@/components/NotificationsManager.vue";
 
 export default {
-  components: {NotificationsManager},
-  setup() {
-    const router = useRouter();
+  beforeRouteEnter(to, from, next){
     const authStore = useAuthStore();
     authStore.actionCheckLoggedIn();
-    if (!authStore.hasAdminAccess) {
-      router.push({name: 'home'});
+    if (authStore.hasAdminAccess) {
+      next();
+    } else {
+      next({name: 'home'});
     }
-  }
+  },
 }
 </script>
 
