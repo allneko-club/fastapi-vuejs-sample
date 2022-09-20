@@ -3,38 +3,38 @@
 
   <Form @submit="onSubmit" :initial-values="initialValues" :validation-schema="schema">
     <TextInput
-      name="name"
-      type="text"
-      label="name"
+        name="name"
+        type="text"
+        label="name"
     />
     <TextInput
-      name="email"
-      type="email"
-      label="email"
+        name="email"
+        type="email"
+        label="email"
     />
     <SingleCheckbox
-      name="isActive"
-      type="checkbox"
-      label="isActive"
+        name="isActive"
+        type="checkbox"
+        label="isActive"
     />
     <SingleCheckbox
-      name="isSuperuser"
-      type="checkbox"
-      label="isSuperuser"
+        name="isSuperuser"
+        type="checkbox"
+        label="isSuperuser"
     />
     <TextInput
-      name="password1"
-      type="password"
-      label="password"
+        name="password1"
+        type="password"
+        label="password"
     />
     <TextInput
-      name="password2"
-      type="password"
-      label="password (confirm)"
+        name="password2"
+        type="password"
+        label="password (confirm)"
     />
     <button>Save</button>
   </form>
-<!--  <v-btn @click="back">back</v-btn>-->
+  <!--  <v-btn @click="back">back</v-btn>-->
 </template>
 
 <script>
@@ -49,7 +49,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
-  setup(){
+  setup() {
     const store = useAdminStore();
     const route = useRoute();
 
@@ -76,26 +76,25 @@ export default {
     const onSubmit = async (values) => {
       const store = useAdminStore();
       const data = {};
-      if(values.name){
+      if (values.name) {
         data.name = values.name;
       }
-      if(values.email){
+      if (values.email) {
         data.email = values.email;
       }
       data.is_active = values.isActive;
       data.is_superuser = values.isSuperuser;
-      if(values.password1) {
+      if (values.password1) {
         data.password = values.password1;
       }
       await store.actionUpdateUser(userId, data);
       await router.push({name: 'admin-users'});
     }
 
-    return {
-      initialValues,
-      schema,
-      onSubmit,
-    }
+    return {initialValues, schema, onSubmit}
   }
 }
 </script>
+
+<style scoped>
+</style>

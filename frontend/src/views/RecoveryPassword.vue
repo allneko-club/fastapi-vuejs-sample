@@ -4,19 +4,19 @@
 
   <Form @submit="onSubmit" :validation-schema="schema">
     <TextInput
-      name="email"
-      type="email"
-      label="email"
-      placeholder="Your email"
+        name="email"
+        type="email"
+        label="email"
+        placeholder="Your email"
     />
     <button>Recover Password</button>
   </Form>
 </template>
 
 <script>
-import { Form } from "vee-validate";
+import {Form} from "vee-validate";
 import * as yup from 'yup';
-import { useAuthStore } from "@/stores/useAuthStore";
+import {useAuthStore} from "@/stores/useAuthStore";
 import TextInput from "@/components/fields/TextInput.vue";
 
 export default {
@@ -28,10 +28,7 @@ export default {
     const onSubmit = async (values) => {
       await authStore.passwordRecovery(values.email)
     };
-    return {
-      schema,
-      onSubmit,
-    }
+    return {schema, onSubmit}
   }
 }
 </script>

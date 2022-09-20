@@ -13,7 +13,7 @@ import {computed} from "vue";
 import {useAdminStore} from "@/stores/useAdminStore";
 
 export default {
-  setup(){
+  setup() {
     const store = useAdminStore();
     store.actionGetUsers();
     return {

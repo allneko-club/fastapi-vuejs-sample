@@ -3,45 +3,43 @@
 
   <Form @submit="onSubmit" :validation-schema="schema">
     <TextInput
-      name="name"
-      type="text"
-      label="name"
+        name="name"
+        type="text"
+        label="name"
     />
     <TextInput
-      name="email"
-      type="email"
-      label="email"
+        name="email"
+        type="email"
+        label="email"
     />
     <SingleCheckbox
-      name="isActive"
-      type="checkbox"
-      label="isActive"
+        name="isActive"
+        type="checkbox"
+        label="isActive"
     />
     <SingleCheckbox
-      name="isSuperuser"
-      type="checkbox"
-      label="isSuperuser"
+        name="isSuperuser"
+        type="checkbox"
+        label="isSuperuser"
     />
     <TextInput
-      name="password1"
-      type="password"
-      label="password"
+        name="password1"
+        type="password"
+        label="password"
     />
     <TextInput
-      name="password2"
-      type="password"
-      label="password (confirm)"
+        name="password2"
+        type="password"
+        label="password (confirm)"
     />
     <button>Save</button>
   </Form>
-<!--  <v-btn @click="back">back</v-btn>-->
+  <!--  <v-btn @click="back">back</v-btn>-->
 </template>
 
 <script>
 import {Form} from "vee-validate";
 import * as yup from 'yup';
-
-import {useAuthStore} from "@/stores/useAuthStore";
 import {useAdminStore} from "@/stores/useAdminStore";
 import TextInput from "@/components/fields/TextInput.vue";
 import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
@@ -49,7 +47,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
-  setup(){
+  setup() {
     const schema = yup.object({
       name: yup.string(),
       email: yup.string().required().email(),
@@ -72,10 +70,10 @@ export default {
       await router.push({name: 'admin-users'});
     };
 
-    return {
-      schema,
-      onSubmit,
-    }
+    return {schema, onSubmit}
   }
 }
 </script>
+
+<style scoped>
+</style>

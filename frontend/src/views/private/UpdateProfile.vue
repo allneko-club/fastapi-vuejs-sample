@@ -1,25 +1,25 @@
 <template>
   <h2>Edit User Profile</h2>
 
-  <Form @submit="onSubmit" :initial-values="initialValues" :validation-schema="schema">
+  <Form :initial-values="initialValues" :validation-schema="schema" @submit="onSubmit">
     <TextInput
-      name="name"
-      type="text"
-      label="name"
-      placeholder="Your Name"
+        label="name"
+        name="name"
+        placeholder="Your Name"
+        type="text"
     />
     <TextInput
-      name="email"
-      type="email"
-      label="email"
-      placeholder="Your email"
+        label="email"
+        name="email"
+        placeholder="Your email"
+        type="email"
     />
     <button>Submit</button>
   </Form>
 </template>
 
 <script>
-import { Form } from "vee-validate";
+import {Form} from "vee-validate";
 import * as yup from 'yup';
 
 import TextInput from "@/components/fields/TextInput.vue";
@@ -28,7 +28,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput},
-  setup(){
+  setup() {
     const authStore = useAuthStore();
 
     const schema = yup.object({

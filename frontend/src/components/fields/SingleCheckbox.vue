@@ -1,13 +1,14 @@
 <template>
   <div>
     <label :for="name">{{ label }}</label>
-    <Field :name="name" :id="name" :type="type" :value="value" :unchecked-value="uncheckedValue" :placeholder="placeholder"/>
-    <ErrorMessage  :name="name" />
+    <Field :name="name" :id="name" :type="type" :value="value" :unchecked-value="uncheckedValue"
+           :placeholder="placeholder"/>
+    <ErrorMessage :name="name"/>
   </div>
 </template>
 
 <script>
-import {Field, ErrorMessage, Form} from 'vee-validate';
+import {ErrorMessage, Field, Form} from 'vee-validate';
 
 export default {
   components: {Field, Form, ErrorMessage},
@@ -42,5 +43,7 @@ export default {
     },
   },
 }
-
 </script>
+
+<style scoped>
+</style>

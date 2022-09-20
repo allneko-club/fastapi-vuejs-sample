@@ -1,7 +1,7 @@
 <template>
   <header>
     <nav>
-      <router-link :to="{ name: 'home'}">{{appName}}</router-link>
+      <router-link :to="{ name: 'home'}">{{ appName }}</router-link>
       <template v-if="authStore.hasAdminAccess">
         <router-link :to="{ name: 'admin'}">Admin</router-link>
       </template>
@@ -23,10 +23,7 @@ export default {
   setup() {
     const appName = import.meta.env.VITE_APP_NAME;
     const authStore = useAuthStore();
-    return {
-      appName,
-      authStore,
-    }
+    return {appName, authStore}
   }
 }
 

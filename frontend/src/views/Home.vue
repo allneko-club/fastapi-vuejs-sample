@@ -1,5 +1,5 @@
 <template>
-  <Header />
+  <Header/>
   <router-view></router-view>
 </template>
 
@@ -10,7 +10,6 @@ export default {
   name: 'Home',
   components: {Header}
 }
-
 </script>
 
 <style scoped>

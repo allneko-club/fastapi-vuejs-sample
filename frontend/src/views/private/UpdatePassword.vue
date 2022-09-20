@@ -2,16 +2,16 @@
   <h5>change password</h5>
   <p>Enter your new password below</p>
 
-  <Form @submit="onSubmit" :validation-schema="schema">
+  <Form :validation-schema="schema" @submit="onSubmit">
     <TextInput
-      name="password1"
-      type="password"
-      label="password"
+        label="password"
+        name="password1"
+        type="password"
     />
     <TextInput
-      name="password2"
-      type="password"
-      label="password (confirm)"
+        label="password (confirm)"
+        name="password2"
+        type="password"
     />
     <button>Change Password</button>
   </Form>
@@ -28,7 +28,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput},
-  setup(){
+  setup() {
     const schema = yup.object({
       password1: yup.string().required(),
       password2: yup.string().required(),
@@ -40,10 +40,10 @@ export default {
       await router.push({name: 'private-profile'});
     };
 
-    return {
-      schema,
-      onSubmit,
-    }
+    return {schema, onSubmit}
   }
 }
 </script>
+
+<style scoped>
+</style>

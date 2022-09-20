@@ -8,16 +8,19 @@
     <br>
     <router-link :to="{ name: 'private-profile-update-password'}">Change password</router-link>
   </p>
-  <router-view />
+  <router-view/>
 </template>
 
 <script>
-import { useAuthStore } from "@/stores/useAuthStore";
+import {useAuthStore} from "@/stores/useAuthStore";
 
 export default {
-  setup(){
+  setup() {
     const authStore = useAuthStore();
     return {authStore}
   }
 }
 </script>
+
+<style scoped>
+</style>
