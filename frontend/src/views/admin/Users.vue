@@ -1,9 +1,9 @@
 <template>
   <h1>users</h1>
-  <router-link :to="{ name: 'admin-users-create'}">create</router-link>
+  <router-link :to="{ name: 'admin-create-user'}">create</router-link>
   <li v-for="user in users">
     {{ user.id }}: {{ user }}
-    <router-link :to="{ name: 'admin-users-update', params: { id: user.id }}">update</router-link>
+    <router-link :to="{ name: 'admin-update-user', params: { id: user.id }}">update</router-link>
     <button type="button" v-on:click="adminStore.deleteUser(user.id)">delete</button>
   </li>
 </template>

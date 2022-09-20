@@ -4,9 +4,9 @@
     {{ key }}: {{ value }}
   </li>
   <p>
-    <router-link :to="{ name: 'private-profile-update'}">Edit</router-link>
+    <router-link :to="{ name: 'update-profile'}">Edit</router-link>
     <br>
-    <router-link :to="{ name: 'private-profile-update-password'}">Change password</router-link>
+    <router-link :to="{ name: 'update-password'}">Change password</router-link>
   </p>
   <router-view/>
 </template>

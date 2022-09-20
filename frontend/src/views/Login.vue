@@ -21,7 +21,7 @@
       </div>
       <button type="submit">Login</button>
     </Form>
-    <router-link :to="{ name: 'recover-password'}">recover-password</router-link>
+    <router-link :to="{ name: 'reset-password'}">reset-password</router-link>
   </div>
 </template>
 

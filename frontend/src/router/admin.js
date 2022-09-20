@@ -11,12 +11,12 @@ const routes = [
       },
       {
         path: 'users/update/:id',
-        name: 'admin-users-update',
+        name: 'admin-update-user',
         component: () => import('@/views/admin/UpdateUser.vue'),
       },
       {
         path: 'users/create',
-        name: 'admin-users-create',
+        name: 'admin-create-user',
         component: () => import('@/views/admin/CreateUser.vue'),
       },
     ],

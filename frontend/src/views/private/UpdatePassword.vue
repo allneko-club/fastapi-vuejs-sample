@@ -37,7 +37,7 @@ export default {
     const authStore = useAuthStore();
     const onSubmit = async (values) => {
       await authStore.updateUserProfile({password: values.password1});
-      await router.push({name: 'private-profile'});
+      await router.push({name: 'profile'});
     };
 
     return {schema, onSubmit}

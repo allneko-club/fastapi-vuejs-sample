@@ -43,7 +43,7 @@ export default {
 
     const onSubmit = async (values) => {
       await authStore.updateUserProfile(values);
-      await router.push({name: 'private-profile'});
+      await router.push({name: 'profile'});
     }
 
     return {initialValues, schema, onSubmit}
