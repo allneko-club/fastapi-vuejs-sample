@@ -6,17 +6,17 @@ const routes = [
     children: [
       {
         path: 'account',
-        name: 'private-account',
-        component: () => import('@/views/private/UserAccount.vue'),
+        name: 'private-profile',
+        component: () => import('@/views/private/UserProfile.vue'),
       },
       {
         path: 'account/edit',
-        name: 'private-account-update',
+        name: 'private-profile-update',
         component: () => import('@/views/private/UserProfileUpdate.vue'),
       },
       {
         path: 'account/update-password',
-        name: 'private-account-update-password',
+        name: 'private-profile-update-password',
         component: () => import('@/views/private/UserUpdatePassword.vue'),
       },
     ]

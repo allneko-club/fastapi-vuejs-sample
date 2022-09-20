@@ -8,7 +8,7 @@ import {useNotificationStore} from "@/stores/useNotificationStore";
 
 export const useAuthStore = defineStore('auth', () => {
     // properties
-    const logInError = ref(false)
+    const loginError = ref(false)
     const userProfile = ref(null)
     const token = ref('')
     const isLoggedIn = ref(false)
@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
     )
 
     // actions
-    async function actionLogIn(username, password) {
+    async function actionLogin(username, password) {
         try {
             const response = await api.logInGetToken(username, password);
             const access_token = response.data.access_token;
@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
                 saveLocalToken(access_token);
                 token.value = access_token;
                 isLoggedIn.value = true;
-                logInError.value = false;
+                loginError.value = false;
                 await actionGetUserProfile();
                 await actionRouteLoggedIn();
                 await router.push({name: 'private'});
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
                 await actionLogOut();
             }
         } catch (err) {
-            logInError.value = true;
+            loginError.value = true;
             await actionLogOut();
         }
     }
@@ -64,7 +64,6 @@ export const useAuthStore = defineStore('auth', () => {
             userProfile.value = response.data;
             notificationStore.remove(loadingNotification);
             notificationStore.add({content: 'Profile successfully updated', color: 'success'});
-            await router.push({name: 'private-account'});
         } catch (error) {
             await actionCheckApiError(error);
         }
@@ -86,22 +85,22 @@ export const useAuthStore = defineStore('auth', () => {
                     isLoggedIn.value = true;
                     userProfile.value = response.data;
                 } catch (error) {
-                    await actionRemoveLogIn();
+                    await actionRemoveLogin();
                 }
             } else {
-                await actionRemoveLogIn();
+                await actionRemoveLogin();
             }
         }
     }
 
-    async function actionRemoveLogIn() {
+    async function actionRemoveLogin() {
         removeLocalToken();
         token.value = '';
         isLoggedIn.value = false;
     }
 
     async function actionLogOut() {
-        await actionRemoveLogIn();
+        await actionRemoveLogin();
         await actionRouteLogOut();
     }
 
@@ -156,11 +155,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     return {
         isLoggedIn,
-        logInError,
+        loginError,
         token,
         userProfile,
         hasAdminAccess,
-        actionLogIn,
+        actionLogin,
         actionCheckLoggedIn,
         actionUserLogOut,
         actionCheckApiError,

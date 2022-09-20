@@ -1,7 +1,7 @@
 <template>
   <Header />
   <h2>private page</h2>
-  <router-link :to="{ name: 'private-account'}">account</router-link>
+  <router-link :to="{ name: 'private-profile'}">account</router-link>
   <router-view></router-view>
 </template>
 

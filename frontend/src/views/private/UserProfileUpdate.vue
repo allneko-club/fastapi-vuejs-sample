@@ -24,6 +24,7 @@ import * as yup from 'yup';
 
 import TextInput from "@/components/fields/TextInput.vue";
 import {useAuthStore} from "@/stores/useAuthStore";
+import router from "@/router";
 
 export default {
   components: {Form, TextInput},
@@ -42,13 +43,10 @@ export default {
 
     const onSubmit = async (values) => {
       await authStore.actionUpdateUserProfile(values);
+      await router.push({name: 'private-profile'});
     }
 
-    return {
-      initialValues,
-      schema,
-      onSubmit
-    }
+    return {initialValues, schema, onSubmit}
   }
 }
 </script>

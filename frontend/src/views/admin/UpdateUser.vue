@@ -45,6 +45,7 @@ import * as yup from 'yup';
 import {useAdminStore} from "@/stores/useAdminStore";
 import TextInput from "@/components/fields/TextInput.vue";
 import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
+import router from "@/router";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
@@ -62,7 +63,7 @@ export default {
       isActive: yup.boolean(),
       isSuperuser: yup.boolean(),
       password1: yup.string(),
-      password2: yup.string(),
+      password2: yup.string().oneOf([yup.ref('password1')], 'Passwords do not match'),
     });
 
     const initialValues = {
@@ -83,10 +84,11 @@ export default {
       }
       data.is_active = values.isActive;
       data.is_superuser = values.isSuperuser;
-      if(values.password1 && values.password1 === values.password2) {
+      if(values.password1) {
         data.password = values.password1;
       }
       store.actionUpdateUser(userId, data);
+      router.push({name: 'admin-users-update'});
     }
 
     return {

@@ -49,7 +49,6 @@ export const useAdminStore = defineStore('admin', () => {
             setUser(response.data);
             notificationStore.remove(loadingNotification);
             notificationStore.add({ content: 'User successfully updated', color: 'success' });
-            router.push({name: 'admin-users-update'});
         } catch (error) {
             await authStore.actionCheckApiError(error);
         }
@@ -66,7 +65,6 @@ export const useAdminStore = defineStore('admin', () => {
             setUser(response.data);
             notificationStore.remove(loadingNotification);
             notificationStore.add({ content: 'User successfully created', color: 'success' });
-            router.push({name: 'admin-users'});
         } catch (error) {
             await authStore.actionCheckApiError(error);
         }

@@ -45,6 +45,7 @@ import {useAuthStore} from "@/stores/useAuthStore";
 import {useAdminStore} from "@/stores/useAdminStore";
 import TextInput from "@/components/fields/TextInput.vue";
 import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
+import router from "@/router";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
@@ -65,10 +66,11 @@ export default {
       const data = {};
       data.name = values.name;
       data.email = values.email;
-      data.is_active = !!values.isActive ;
-      data.is_superuser = !!values.isSuperuser;
+      data.is_active = values.isActive;
+      data.is_superuser = values.isSuperuser;
       data.password = values.password1;
       store.actionCreateUser(data);
+      router.push({name: 'admin-users'});
     };
 
     return {
