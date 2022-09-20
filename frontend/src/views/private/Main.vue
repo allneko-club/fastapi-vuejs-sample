@@ -15,6 +15,7 @@ export default {
   setup() {
     const router = useRouter();
     const authStore = useAuthStore();
+    authStore.actionCheckLoggedIn();
     if (!authStore.isLoggedIn) {
       router.push({name: 'login'});
     }

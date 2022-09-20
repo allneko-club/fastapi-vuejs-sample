@@ -16,6 +16,9 @@
           placeholder="Password"
         />
       </div>
+      <div v-if="authStore.loginError">
+          Incorrect email or password
+      </div>
       <button type="submit">Login</button>
     </Form>
     <router-link :to="{ name: 'recover-password'}">recover-password</router-link>
@@ -46,6 +49,7 @@ export default {
       };
 
       return {
+        authStore,
         schema,
         onSubmit,
       }

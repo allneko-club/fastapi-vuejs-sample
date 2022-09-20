@@ -82,6 +82,7 @@ export const useAuthStore = defineStore('auth', () => {
             if (current_token) {
                 try {
                     const response = await api.getMe(current_token);
+                    // todo status code checkなくても良いか？
                     isLoggedIn.value = true;
                     userProfile.value = response.data;
                 } catch (error) {
@@ -157,7 +158,7 @@ export const useAuthStore = defineStore('auth', () => {
         isLoggedIn, token, logInError, userProfile,
         hasAdminAccess,
         actionLogIn, actionGetUserProfile, actionUpdateUserProfile,
-        // actionCheckLoggedIn,
+        actionCheckLoggedIn,
         // actionRemoveLogIn,
         actionLogOut, actionUserLogOut,
         // actionRouteLogOut,

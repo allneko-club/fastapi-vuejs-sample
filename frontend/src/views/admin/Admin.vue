@@ -14,6 +14,7 @@ export default {
   setup() {
     const router = useRouter();
     const authStore = useAuthStore();
+    authStore.actionCheckLoggedIn();
     if (!authStore.hasAdminAccess) {
       router.push({name: 'home'});
     }
