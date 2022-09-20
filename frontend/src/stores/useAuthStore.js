@@ -155,16 +155,16 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     return {
-        isLoggedIn, token, logInError, userProfile,
+        isLoggedIn,
+        logInError,
+        userProfile,
         hasAdminAccess,
-        actionLogIn, actionGetUserProfile, actionUpdateUserProfile,
+        actionLogIn,
         actionCheckLoggedIn,
-        // actionRemoveLogIn,
-        actionLogOut, actionUserLogOut,
-        // actionRouteLogOut,
+        actionUserLogOut,
         actionCheckApiError,
-        // actionRouteLoggedIn,
+        actionUpdateUserProfile,
         passwordRecovery,
-        //updatePassword
+        updatePassword
     }
 })

@@ -12,21 +12,18 @@ export const useAdminStore = defineStore('admin', () => {
 
     // getters
     const getUserById = computed(() => (userId) => {
-        const filteredUsers = users.value.filter((user) => user.id === Number(userId));
-        if (filteredUsers.length > 0) {
-            return { ...filteredUsers[0] };
-        }
+        return users.value.find(user => user.id === Number(userId));
     })
 
     // actions
     function setUser(payload) {
-        const new_users = users.value.filter((user) => user.id !== payload.id);
+        const new_users = users.value.filter(user => user.id !== payload.id);
         new_users.push(payload);
         users.value.users = new_users;
     }
 
     function deleteUser(userId) {
-        users.value.users = users.value.filter((user) => user.id !== userId);
+        users.value.users = users.value.filter(user => user.id !== userId);
     }
 
     async function actionGetUsers() {
@@ -90,6 +87,12 @@ export const useAdminStore = defineStore('admin', () => {
     }
 
     return {
-        users, getUserById, setUser, actionGetUsers, actionUpdateUser, actionCreateUser, actionDeleteUser
+        users,
+        getUserById,
+        setUser,
+        actionGetUsers,
+        actionCreateUser,
+        actionUpdateUser,
+        actionDeleteUser,
     }
 })
