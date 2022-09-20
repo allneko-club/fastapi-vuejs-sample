@@ -26,5 +26,6 @@ export const useNotificationStore = defineStore('notification', () => {
             }, payload.timeout);
         });
     }
+
     return {hasNotification, add, remove, removeNotification}
 })

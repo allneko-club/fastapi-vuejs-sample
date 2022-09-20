@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiUrl } from '@/env';
+import {apiUrl} from '@/env';
 
 function authHeaders(token) {
   return {
