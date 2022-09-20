@@ -7,7 +7,7 @@
       </template>
       <template v-if="authStore.isLoggedIn">
         <router-link :to="{ name: 'private'}">private</router-link>
-        <button @click="authStore.actionUserLogOut">Logout</button>
+        <button @click="authStore.userLogout">Logout</button>
       </template>
       <template v-else>
         <router-link :to="{ name: 'login'}">Log in</router-link>
