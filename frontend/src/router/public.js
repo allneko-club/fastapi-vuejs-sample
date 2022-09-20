@@ -16,6 +16,12 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    // component: NotFound,
+    redirect: '/',
+  },
 ]
 
 export default routes;
