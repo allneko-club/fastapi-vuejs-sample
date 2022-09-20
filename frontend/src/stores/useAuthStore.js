@@ -3,7 +3,7 @@ import {defineStore} from 'pinia';
 
 import router from '@/router';
 import {api} from "@/api";
-import {getLocalToken, removeLocalToken, saveLocalToken} from '@/utils';
+import {getLocalToken, removeLocalToken, saveLocalToken} from '@/localStorage';
 import {useNotificationStore} from "@/stores/useNotificationStore";
 
 export const useAuthStore = defineStore('auth', () => {
