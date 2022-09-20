@@ -13,7 +13,7 @@ import {useAuthStore} from "@/stores/useAuthStore";
 export default {
   beforeRouteEnter(to, from, next) {
     const authStore = useAuthStore();
-    authStore.actionCheckLoggedIn();
+    authStore.checkLoggedIn();
     if (authStore.hasAdminAccess) {
       next();
     } else {

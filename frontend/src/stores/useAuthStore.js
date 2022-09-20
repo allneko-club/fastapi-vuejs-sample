@@ -1,7 +1,6 @@
 import {computed, ref} from "vue";
 import {defineStore} from 'pinia';
 
-import router from '@/router';
 import {api} from "@/api";
 import {getLocalToken, removeLocalToken, saveLocalToken} from '@/localStorage';
 import {useNotificationStore} from "@/stores/useNotificationStore";
@@ -20,40 +19,38 @@ export const useAuthStore = defineStore('auth', () => {
     )
 
     // actions
-    async function actionLogin(username, password) {
+    async function login(username, password) {
         try {
             const response = await api.logInGetToken(username, password);
             const access_token = response.data.access_token;
-            console.log(access_token);
             if (access_token) {
                 saveLocalToken(access_token);
                 token.value = access_token;
                 isLoggedIn.value = true;
                 loginError.value = false;
-                await actionGetUserProfile();
+                await fetchUserProfile();
                 await actionRouteLoggedIn();
-                await router.push({name: 'private'});
             } else {
-                await actionLogOut();
+                await logout();
             }
         } catch (err) {
             loginError.value = true;
-            await actionLogOut();
+            await logout();
         }
     }
 
-    async function actionGetUserProfile() {
+    async function fetchUserProfile() {
         try {
             const response = await api.getMe(token.value);
             if (response.data) {
                 userProfile.value = response.data;
             }
         } catch (error) {
-            await this.actionCheckApiError(error);
+            await this.checkApiError(error);
         }
     }
 
-    async function actionUpdateUserProfile(payload) {
+    async function updateUserProfile(payload) {
         try {
             const loadingNotification = {content: 'saving', showProgress: true};
             notificationStore.add(loadingNotification);
@@ -65,11 +62,11 @@ export const useAuthStore = defineStore('auth', () => {
             notificationStore.remove(loadingNotification);
             notificationStore.add({content: 'Profile successfully updated', color: 'success'});
         } catch (error) {
-            await actionCheckApiError(error);
+            await checkApiError(error);
         }
     }
 
-    async function actionCheckLoggedIn() {
+    async function checkLoggedIn() {
         if (isLoggedIn.value) {
             let current_token = token.value;
             if (!current_token) {
@@ -85,56 +82,50 @@ export const useAuthStore = defineStore('auth', () => {
                     isLoggedIn.value = true;
                     userProfile.value = response.data;
                 } catch (error) {
-                    await actionRemoveLogin();
+                    await removeLogin();
                 }
             } else {
-                await actionRemoveLogin();
+                await removeLogin();
             }
         }
     }
 
-    async function actionRemoveLogin() {
+    async function removeLogin() {
         removeLocalToken();
         token.value = '';
         isLoggedIn.value = false;
     }
 
-    async function actionLogOut() {
-        await actionRemoveLogin();
-        await actionRouteLogOut();
+    async function logout() {
+        await removeLogin();
+        await this.router.push({name: 'login'});
     }
 
-    async function actionUserLogOut() {
-        await actionLogOut();
+    async function userLogout() {
+        await logout();
         notificationStore.add({content: 'Logged out', color: 'success'});
     }
 
-    function actionRouteLogOut() {
-        if (router.currentRoute.path !== '/login') {
-            router.push({name: 'login'});
-        }
-    }
-
-    async function actionCheckApiError(payload) {
+    async function checkApiError(payload) {
         if (payload.response.status === 401) {
-            await actionLogOut();
+            await logout();
         }
     }
 
     function actionRouteLoggedIn() {
-        if (router.currentRoute.path === '/login' || router.currentRoute.path === '/') {
-            router.push({name: 'private'});
+        if (this.router.currentRoute.name === 'login' || this.router.currentRoute.name === 'home') {
+            this.router.push({name: 'private'});
         }
     }
 
-    async function passwordRecovery(username) {
+    async function resetPassword(username) {
         try {
             const response = (await Promise.all([
-                api.passwordRecovery(username),
+                api.resetPassword(username),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             notificationStore.add({content: 'Password recovery email sent', color: 'success'});
-            await actionLogOut();
+            await logout();
         } catch (error) {
             notificationStore.add({color: 'error', content: 'Incorrect username'});
         }
@@ -147,7 +138,7 @@ export const useAuthStore = defineStore('auth', () => {
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]);
             notificationStore.add({content: 'Password successfully reset', color: 'success'});
-            await actionLogOut();
+            await logout();
         } catch (error) {
             notificationStore.add({color: 'error', content: 'Error resetting password'});
         }
@@ -159,12 +150,12 @@ export const useAuthStore = defineStore('auth', () => {
         token,
         userProfile,
         hasAdminAccess,
-        actionLogin,
-        actionCheckLoggedIn,
-        actionUserLogOut,
-        actionCheckApiError,
-        actionUpdateUserProfile,
-        passwordRecovery,
+        login,
+        checkLoggedIn,
+        userLogout,
+        checkApiError,
+        updateUserProfile,
+        resetPassword,
         updatePassword
     }
 })

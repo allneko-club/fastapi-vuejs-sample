@@ -50,12 +50,12 @@ import router from "@/router";
 export default {
   components: {Form, TextInput, SingleCheckbox},
   setup() {
-    const store = useAdminStore();
+    const adminStore = useAdminStore();
     const route = useRoute();
 
     const userId = route.params.id;
     //todo getUserByIdは一覧ページで取得したデータから検索している。直接このページにアクセスした場合は、エラーが出そう
-    const user = store.getUserById(userId);
+    const user = adminStore.getUserById(userId);
 
     const schema = yup.object({
       name: yup.string(),
@@ -87,7 +87,7 @@ export default {
       if (values.password1) {
         data.password = values.password1;
       }
-      await store.actionUpdateUser(userId, data);
+      await store.updateUser(userId, data);
       await router.push({name: 'admin-users'});
     }
 

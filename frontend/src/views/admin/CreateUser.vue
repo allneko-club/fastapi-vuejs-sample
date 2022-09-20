@@ -66,7 +66,7 @@ export default {
       data.is_active = values.isActive;
       data.is_superuser = values.isSuperuser;
       data.password = values.password1;
-      await store.actionCreateUser(data);
+      await store.createUser(data);
       await router.push({name: 'admin-users'});
     };
 

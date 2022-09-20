@@ -42,7 +42,7 @@ export default {
     };
 
     const onSubmit = async (values) => {
-      await authStore.actionUpdateUserProfile(values);
+      await authStore.updateUserProfile(values);
       await router.push({name: 'private-profile'});
     }
 

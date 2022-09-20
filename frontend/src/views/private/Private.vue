@@ -14,7 +14,7 @@ export default {
   components: {Header},
   beforeRouteEnter(to, from, next) {
     const authStore = useAuthStore();
-    authStore.actionCheckLoggedIn();
+    authStore.checkLoggedIn();
     if (authStore.isLoggedIn) {
       next();
     } else {

@@ -43,7 +43,7 @@ export default {
     });
 
     const onSubmit = async (values) => {
-      await authStore.actionLogin(values.username, values.password)
+      await authStore.login(values.username, values.password)
     };
 
     return {authStore, schema, onSubmit}

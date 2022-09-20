@@ -20,13 +20,13 @@ import {useAuthStore} from "@/stores/useAuthStore";
 import TextInput from "@/components/fields/TextInput.vue";
 
 export default {
-  name: 'PasswordRecovery',
+  name: 'resetPassword',
   components: {Form, TextInput},
   setup() {
     const authStore = useAuthStore();
     const schema = yup.object({email: yup.string().email().required()});
     const onSubmit = async (values) => {
-      await authStore.passwordRecovery(values.email)
+      await authStore.resetPassword(values.email)
     };
     return {schema, onSubmit}
   }

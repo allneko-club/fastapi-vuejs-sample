@@ -4,7 +4,7 @@
   <li v-for="user in users">
     {{ user.id }}: {{ user }}
     <router-link :to="{ name: 'admin-users-update', params: { id: user.id }}">update</router-link>
-    <button type="button" v-on:click="store.actionDeleteUser(user.id)">delete</button>
+    <button type="button" v-on:click="adminStore.deleteUser(user.id)">delete</button>
   </li>
 </template>
 
@@ -14,11 +14,11 @@ import {useAdminStore} from "@/stores/useAdminStore";
 
 export default {
   setup() {
-    const store = useAdminStore();
-    store.actionGetUsers();
+    const adminStore = useAdminStore();
+    adminStore.fetchUsers();
     return {
-      store,
-      users: computed(() => store.users)
+      adminStore,
+      users: computed(() => adminStore.users)
     }
   }
 }
