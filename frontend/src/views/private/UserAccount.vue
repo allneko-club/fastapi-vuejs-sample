@@ -1,6 +1,6 @@
 <template>
   <h2>This is your account page</h2>
-  <li v-for="(value, key) in userProfile">
+  <li v-for="(value, key) in authStore.userProfile">
     {{ key }}: {{ value }}
   </li>
   <p>
@@ -13,15 +13,11 @@
 
 <script>
 import { useAuthStore } from "@/stores/useAuthStore";
-import {computed} from "vue";
 
 export default {
   setup(){
     const authStore = useAuthStore();
-    authStore.actionGetUserProfile();
-    return {
-      userProfile: computed(() => authStore.userProfile)
-    }
+    return {authStore}
   }
 }
 </script>
