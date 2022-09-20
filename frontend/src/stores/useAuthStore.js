@@ -1,5 +1,6 @@
 import {computed, ref} from "vue";
 import {defineStore} from 'pinia';
+import {useRouter} from 'vue-router'
 
 import {api} from "@/api";
 import {getLocalToken, removeLocalToken, saveLocalToken} from '@/localStorage';
@@ -12,6 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
     const token = ref('')
     const isLoggedIn = ref(false)
     const notificationStore = useNotificationStore();
+    const router = ref(useRouter());
 
     // getters
     const hasAdminAccess = computed(() =>
@@ -98,7 +100,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function logout() {
         await removeLogin();
-        await this.router.push({name: 'login'});
+        await router.value.push({name: 'login'});
     }
 
     async function userLogout() {
@@ -113,8 +115,8 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     function actionRouteLoggedIn() {
-        if (this.router.currentRoute.name === 'login' || this.router.currentRoute.name === 'home') {
-            this.router.push({name: 'private'});
+        if (router.value.currentRoute.name === 'login' || router.value.currentRoute.name === 'home') {
+            router.value.push({name: 'private'});
         }
     }
 
