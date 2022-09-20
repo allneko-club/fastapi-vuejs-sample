@@ -1,6 +1,7 @@
 <template>
-  <NotificationsManager />
   <Header />
+  <h2>private page</h2>
+  <router-link :to="{ name: 'private-account'}">account</router-link>  <NotificationsManager />
   <router-view></router-view>
 </template>
 

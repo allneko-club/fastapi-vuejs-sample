@@ -3,13 +3,7 @@ const routes = [
     path: "/private",
     name: "private",
     component: () => import('@/views/private/Main.vue'),
-    redirect: 'private/dashboard',
     children: [
-      {
-        path: 'dashboard',
-        name: "private-dashboard",
-        component: () => import("@/views/private/Dashboard.vue"),
-      },
       {
         path: 'account',
         name: 'private-account',

@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     // getters
     const hasAdminAccess = computed(() =>
-        userProfile.value && userProfile.value.is_superuser && userProfile.value.is_active
+        isLoggedIn.value && userProfile.value && userProfile.value.is_superuser
     )
 
     // actions
@@ -32,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
                 logInError.value = false;
                 await actionGetUserProfile();
                 await actionRouteLoggedIn();
-                await router.push({name: 'private-dashboard'});
+                await router.push({name: 'private'});
             } else {
                 await this.actionLogOut();
             }
@@ -124,7 +124,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     function actionRouteLoggedIn() {
         if (router.currentRoute.path === '/login' || router.currentRoute.path === '/') {
-            router.push({name: 'private-dashboard'});
+            router.push({name: 'private'});
         }
     }
 
