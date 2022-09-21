@@ -28,7 +28,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput},
-  setup() {
+  setup(props, context) {
     const authStore = useAuthStore();
 
     const schema = yup.object({

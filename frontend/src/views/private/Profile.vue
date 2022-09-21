@@ -15,7 +15,7 @@
 import {useAuthStore} from "@/stores/useAuthStore";
 
 export default {
-  setup() {
+  setup(props, context) {
     const authStore = useAuthStore();
     return {authStore}
   }

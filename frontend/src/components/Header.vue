@@ -20,7 +20,7 @@
 import {useAuthStore} from "@/stores/useAuthStore";
 
 export default {
-  setup() {
+  setup(props, context) {
     const appName = import.meta.env.VITE_APP_NAME;
     const authStore = useAuthStore();
     return {appName, authStore}

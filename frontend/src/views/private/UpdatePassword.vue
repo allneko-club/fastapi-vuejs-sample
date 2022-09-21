@@ -28,7 +28,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput},
-  setup() {
+  setup(props, context) {
     const schema = yup.object({
       password1: yup.string().required(),
       password2: yup.string().required(),

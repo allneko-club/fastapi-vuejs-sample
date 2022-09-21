@@ -34,7 +34,7 @@ import TextInput from "@/components/fields/TextInput.vue";
 export default {
   name: 'Login',
   components: {Form, TextInput},
-  setup() {
+  setup(props, context) {
     const authStore = useAuthStore();
 
     const schema = yup.object({

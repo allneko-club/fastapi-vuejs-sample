@@ -48,7 +48,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
-  setup() {
+  setup(props, context) {
     const adminStore = useAdminStore();
     const route = useRoute();
 

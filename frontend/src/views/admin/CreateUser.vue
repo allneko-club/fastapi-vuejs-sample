@@ -46,7 +46,7 @@ import router from "@/router";
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
-  setup() {
+  setup(props, context) {
     const schema = yup.object({
       name: yup.string(),
       email: yup.string().required().email(),
