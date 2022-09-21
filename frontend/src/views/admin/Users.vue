@@ -4,22 +4,22 @@
   <li v-for="user in users">
     {{ user.id }}: {{ user }}
     <router-link :to="{ name: 'admin-update-user', params: { id: user.id }}">update</router-link>
-    <button type="button" v-on:click="adminStore.deleteUser(user.id)">delete</button>
+    <button type="button" v-on:click="deleteUser(user.id)">delete</button>
   </li>
 </template>
 
 <script>
-import {computed} from "vue";
+import {onMounted} from "vue";
 import {useAdminStore} from "@/stores/useAdminStore";
+import {storeToRefs} from 'pinia'
 
 export default {
-  setup() {
+  setup(props, context) {
     const adminStore = useAdminStore();
-    adminStore.fetchUsers();
-    return {
-      adminStore,
-      users: computed(() => adminStore.users)
-    }
+    const {users} = storeToRefs(adminStore);
+    const {deleteUser, fetchUsers} = adminStore;
+    onMounted(fetchUsers)
+    return {users, deleteUser}
   }
 }
 </script>
