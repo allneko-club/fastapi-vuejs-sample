@@ -1,72 +1,80 @@
 <template>
-  <div>
-    <div v-show="show">
-      <div v-show="showProgress"></div>
-      {{ currentNotificationContent }}
-      <button @click="close">Close</button>
-    </div>
+  <div v-show="show" :class="currentNotificationColor">
+    {{ currentNotificationContent }}
+    <button @click="close">Close</button>
   </div>
 </template>
 
 <script>
 import {useNotificationStore} from "@/stores/useNotificationStore";
+import {computed, ref} from 'vue'
 
 export default {
-  emits: ['click'],
   setup() {
-    let show = false;
-    const text = '';
-    let showProgress = false;
-    let currentNotification = false;
+    const show = ref(false);
+    const currentNotification = ref(false);
     const store = useNotificationStore();
+    const firstNotification = computed(() => store.notifications.length > 0 && store.notifications[0])
 
     const hide = async () => {
-      show = false;
+      show.value = false;
       await new Promise((resolve, reject) => setTimeout(() => resolve(), 500));
     }
 
     const close = async () => {
       await hide();
-      await removeCurrentNotification();
-    }
-
-    const removeCurrentNotification = async () => {
-      if (currentNotification) {
-        store.removeNotification(currentNotification);
+      if (currentNotification.value) {
+        store.remove(currentNotification.value);
       }
     }
 
     const setNotification = async (notification) => {
-      if (show) {
+      if (show.value) {
         await hide();
       }
+
+      currentNotification.value = notification;
       if (notification) {
-        currentNotification = notification;
-        showProgress = notification.showProgress || false;
-        show = true;
-      } else {
-        currentNotification = false;
+        show.value = true;
       }
-    }
-
-    // @Watch('store.hasNotification')
-    const onNotificationChange = async (newNotification, oldNotification) => {
-      if (newNotification !== currentNotification) {
-        await setNotification(newNotification);
-        if (newNotification) {
-          store.removeNotification({notification: newNotification, timeout: 6500});
-        }
-      }
-    }
-
-    const currentNotificationContent = () => {
-      return currentNotification && currentNotification.content || '';
     }
 
     return {
-      show, showProgress, currentNotificationContent,
-      store,
+      show, currentNotification, store, firstNotification, close, setNotification,
+    }
+  },
+
+  computed: {
+    currentNotificationContent() {
+      return this.currentNotification && this.currentNotification.content;
+    },
+    currentNotificationColor() {
+      return this.currentNotification && this.currentNotification.color;
+    },
+  },
+
+  watch: {
+    async firstNotification(newNotification, oldNotification) {
+      await this.setNotification(newNotification);
+      if (newNotification) {
+        await this.store.removeNotification({notification: newNotification, timeout: 3000});
+      }
     }
   }
+
 }
 </script>
+
+<style scoped>
+.info {
+  color: blue;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+</style>

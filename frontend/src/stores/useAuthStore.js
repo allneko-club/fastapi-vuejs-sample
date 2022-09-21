@@ -54,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function updateUserProfile(payload) {
         try {
-            const loadingNotification = {content: 'saving', showProgress: true};
+            const loadingNotification = {content: 'saving'};
             notificationStore.add(loadingNotification);
             const response = (await Promise.all([
                 api.updateMe(token.value, payload),
@@ -142,7 +142,7 @@ export const useAuthStore = defineStore('auth', () => {
             notificationStore.add({content: 'Password successfully reset', color: 'success'});
             await logout();
         } catch (error) {
-            notificationStore.add({color: 'error', content: 'Error resetting password'});
+            notificationStore.add({content: 'Error resetting password', color: 'error'});
         }
     }
 

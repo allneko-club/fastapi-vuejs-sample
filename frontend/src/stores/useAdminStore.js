@@ -39,7 +39,7 @@ export const useAdminStore = defineStore('admin', () => {
 
   async function createUser(payload) {
     try {
-      const loadingNotification = {content: 'saving', showProgress: true};
+      const loadingNotification = {content: 'saving'};
       notificationStore.add({content: loadingNotification});
       const response = (await Promise.all([
         api.createUser(authStore.token, payload),
@@ -55,7 +55,7 @@ export const useAdminStore = defineStore('admin', () => {
 
   async function updateUser(userId, payload) {
     try {
-      const loadingNotification = {content: 'saving', showProgress: true};
+      const loadingNotification = {content: 'saving'};
       notificationStore.add({content: loadingNotification});
       const response = (await Promise.all([
         api.updateUser(authStore.token, userId, payload),
