@@ -34,7 +34,6 @@
     />
     <button>Save</button>
   </form>
-  <!--  <v-btn @click="back">back</v-btn>-->
 </template>
 
 <script>
@@ -62,8 +61,9 @@ export default {
       email: yup.string(),
       isActive: yup.boolean(),
       isSuperuser: yup.boolean(),
-      password1: yup.string(),
-      password2: yup.string().oneOf([yup.ref('password1')], 'Passwords do not match'),
+      password1: yup.string().label('password'),
+      password2: yup.string().label('password (confirm)')
+          .oneOf([yup.ref('password1')], 'Passwords do not match'),
     });
 
     const initialValues = {
@@ -74,7 +74,6 @@ export default {
     };
 
     const onSubmit = async (values) => {
-      const store = useAdminStore();
       const data = {};
       if (values.name) {
         data.name = values.name;
@@ -87,7 +86,7 @@ export default {
       if (values.password1) {
         data.password = values.password1;
       }
-      await store.updateUser(userId, data);
+      await adminStore.updateUser(userId, data);
       await router.push({name: 'admin-users'});
     }
 

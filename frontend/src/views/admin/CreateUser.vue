@@ -34,7 +34,6 @@
     />
     <button>Save</button>
   </Form>
-  <!--  <v-btn @click="back">back</v-btn>-->
 </template>
 
 <script>
