@@ -4,19 +4,16 @@ import {defineStore} from 'pinia';
 
 export const useNotificationStore = defineStore('notification', () => {
   // properties
+  // notification = {content: '', color: ''}
   const notifications = ref([])
 
   // actions
   function add(payload) {
-    const notification = {
-      content: payload.content,
-      color: payload.color || 'info',
-    }
-    notifications.value.push(notification);
+    notifications.value.push(payload);
   }
 
   function remove(payload) {
-    notifications.value = notifications.value.filter(notification => notification !== payload);
+    notifications.value = notifications.value.filter(notification => notification.content !== payload.content);
   }
 
   async function removeNotification(payload) {

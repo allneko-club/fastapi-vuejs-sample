@@ -22,7 +22,7 @@ export const useAdminStore = defineStore('admin', () => {
     users.value = new_users;
   }
 
-  function deleteUser(userId) {
+  function removeUser(userId) {
     users.value = users.value.filter(user => user.id !== userId);
   }
 
@@ -40,7 +40,7 @@ export const useAdminStore = defineStore('admin', () => {
   async function createUser(payload) {
     try {
       const loadingNotification = {content: 'saving'};
-      notificationStore.add({content: loadingNotification});
+      notificationStore.add(loadingNotification);
       const response = (await Promise.all([
         api.createUser(authStore.token, payload),
         await new Promise((resolve) => setTimeout(() => resolve(), 500)),
@@ -56,7 +56,7 @@ export const useAdminStore = defineStore('admin', () => {
   async function updateUser(userId, payload) {
     try {
       const loadingNotification = {content: 'saving'};
-      notificationStore.add({content: loadingNotification});
+      notificationStore.add(loadingNotification);
       const response = (await Promise.all([
         api.updateUser(authStore.token, userId, payload),
         await new Promise((resolve) => setTimeout(() => resolve(), 500)),
@@ -75,7 +75,7 @@ export const useAdminStore = defineStore('admin', () => {
         api.deleteUser(authStore.token, userId),
         await new Promise((resolve) => setTimeout(() => resolve(), 500)),
       ]))[0];
-      deleteUser(userId);
+      removeUser(userId);
       notificationStore.add({content: 'User successfully deleted', color: 'success'});
     } catch (error) {
       await authStore.checkApiError(error);

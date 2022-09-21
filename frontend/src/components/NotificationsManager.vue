@@ -7,14 +7,21 @@
 
 <script>
 import {useNotificationStore} from "@/stores/useNotificationStore";
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 
 export default {
-  setup() {
+  setup(props, context) {
     const show = ref(false);
     const currentNotification = ref(false);
     const store = useNotificationStore();
     const firstNotification = computed(() => store.notifications.length > 0 && store.notifications[0])
+
+    const currentNotificationContent = computed(
+        () => currentNotification.value && currentNotification.value.content
+    )
+    const currentNotificationColor = computed(
+        () => currentNotification.value && currentNotification.value.color || 'info'
+    )
 
     const hide = async () => {
       show.value = false;
@@ -28,40 +35,23 @@ export default {
       }
     }
 
-    const setNotification = async (notification) => {
+    const updateNotification = async (newNotification, oldNotification) => {
       if (show.value) {
         await hide();
       }
-
-      currentNotification.value = notification;
-      if (notification) {
-        show.value = true;
+      if (oldNotification) {
+        store.remove(oldNotification)
       }
-    }
-
-    return {
-      show, currentNotification, store, firstNotification, close, setNotification,
-    }
-  },
-
-  computed: {
-    currentNotificationContent() {
-      return this.currentNotification && this.currentNotification.content;
-    },
-    currentNotificationColor() {
-      return this.currentNotification && this.currentNotification.color;
-    },
-  },
-
-  watch: {
-    async firstNotification(newNotification, oldNotification) {
-      await this.setNotification(newNotification);
+      currentNotification.value = newNotification;
       if (newNotification) {
-        await this.store.removeNotification({notification: newNotification, timeout: 3000});
+        show.value = true;
+        store.removeNotification({notification: newNotification, timeout: 13000});
       }
     }
-  }
+    watch(firstNotification, updateNotification)
 
+    return {show, currentNotificationContent, currentNotificationColor, close}
+  },
 }
 </script>
 
