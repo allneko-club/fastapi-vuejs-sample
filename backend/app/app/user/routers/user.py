@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db
 from app.core.config import settings
+from app.core.schemas import MsgSchema
 from app.user.cruds import crud_user
 from app.user.dependencies import get_current_active_superuser, get_current_active_user
 from app.mail.utils import send_new_account_email
@@ -131,12 +132,12 @@ def update_user(
     return user
 
 
-@router.delete("/{user_id}")
+@router.delete("/{user_id}", response_model=MsgSchema)
 def delete_user(
     user_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_superuser),
 ):
     crud_user.remove(db, id=user_id)
-    # todo 仮のreturn 何をreturnするべきか
+    # todo 削除系のreturnはMsgSchemaで良いか確認
     return {"msg": "ok"}
