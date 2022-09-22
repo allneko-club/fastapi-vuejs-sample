@@ -8,20 +8,20 @@ export const useNotificationStore = defineStore('notification', () => {
   const notifications = ref([])
 
   // actions
-  function add(payload) {
-    notifications.value.push(payload);
+  function add(notification) {
+    notifications.value.push(notification);
   }
 
-  function remove(payload) {
-    notifications.value = notifications.value.filter(notification => notification.content !== payload.content);
+  function remove(notification) {
+    notifications.value = notifications.value.filter(item => item.content !== notification.content);
   }
 
-  async function removeNotification(payload) {
+  async function removeNotification(notification, timeout) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        remove(payload.notification);
+        remove(notification);
         resolve(true);
-      }, payload.timeout);
+      }, timeout);
     });
   }
 

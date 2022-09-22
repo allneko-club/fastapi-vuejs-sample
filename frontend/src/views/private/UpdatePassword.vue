@@ -36,6 +36,7 @@ export default {
 
     const authStore = useAuthStore();
     const onSubmit = async (values) => {
+      // todo authStore.updatePasswordに変更する
       await authStore.updateUserProfile({password: values.password1});
       await router.push({name: 'profile'});
     };

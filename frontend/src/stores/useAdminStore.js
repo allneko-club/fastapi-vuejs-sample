@@ -16,9 +16,9 @@ export const useAdminStore = defineStore('admin', () => {
   })
 
   // actions
-  function setUser(payload) {
-    const new_users = users.value.filter(user => user.id !== payload.id);
-    new_users.push(payload);
+  function setUser(user) {
+    const new_users = users.value.filter(item => item.id !== user.id);
+    new_users.push(user);
     users.value = new_users;
   }
 
@@ -37,12 +37,12 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
-  async function createUser(payload) {
+  async function createUser(data) {
     try {
       const loadingNotification = {content: 'saving'};
       notificationStore.add(loadingNotification);
       const response = (await Promise.all([
-        api.createUser(authStore.token, payload),
+        api.createUser(authStore.token, data),
         await new Promise((resolve) => setTimeout(() => resolve(), 500)),
       ]))[0];
       setUser(response.data);
@@ -53,12 +53,12 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
-  async function updateUser(userId, payload) {
+  async function updateUser(userId, data) {
     try {
       const loadingNotification = {content: 'saving'};
       notificationStore.add(loadingNotification);
       const response = (await Promise.all([
-        api.updateUser(authStore.token, userId, payload),
+        api.updateUser(authStore.token, userId, data),
         await new Promise((resolve) => setTimeout(() => resolve(), 500)),
       ]))[0];
       setUser(response.data);

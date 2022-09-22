@@ -45,7 +45,7 @@ export default {
       currentNotification.value = newNotification;
       if (newNotification) {
         show.value = true;
-        store.removeNotification({notification: newNotification, timeout: 13000});
+        store.removeNotification(newNotification, 3000);
       }
     }
     watch(firstNotification, updateNotification)

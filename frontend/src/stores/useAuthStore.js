@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     // actions
     async function login(username, password) {
         try {
-            const response = await api.logInGetToken(username, password);
+            const response = await api.loginGetToken(username, password);
             const access_token = response.data.access_token;
             if (access_token) {
                 saveLocalToken(access_token);
@@ -31,14 +31,30 @@ export const useAuthStore = defineStore('auth', () => {
                 isLoggedIn.value = true;
                 loginError.value = false;
                 await fetchUserProfile();
-                await actionRouteLoggedIn();
             } else {
+                loginError.value = true;
                 await logout();
             }
         } catch (err) {
             loginError.value = true;
             await logout();
         }
+    }
+
+    async function userLogout() {
+        await logout();
+        notificationStore.add({content: 'Logged out', color: 'success'});
+    }
+
+    async function logout() {
+        await removeLogin();
+        await router.value.push({name: 'login'});
+    }
+
+    async function removeLogin() {
+        removeLocalToken();
+        token.value = '';
+        isLoggedIn.value = false;
     }
 
     async function fetchUserProfile() {
@@ -52,12 +68,12 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function updateUserProfile(payload) {
+    async function updateUserProfile(data) {
         try {
             const loadingNotification = {content: 'saving'};
             notificationStore.add(loadingNotification);
             const response = (await Promise.all([
-                api.updateMe(token.value, payload),
+                api.updateMe(token.value, data),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             userProfile.value = response.data;
@@ -80,7 +96,6 @@ export const useAuthStore = defineStore('auth', () => {
             if (current_token) {
                 try {
                     const response = await api.getMe(current_token);
-                    // todo status code checkなくても良いか？
                     isLoggedIn.value = true;
                     userProfile.value = response.data;
                 } catch (error) {
@@ -92,38 +107,17 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function removeLogin() {
-        removeLocalToken();
-        token.value = '';
-        isLoggedIn.value = false;
-    }
-
-    async function logout() {
-        await removeLogin();
-        await router.value.push({name: 'login'});
-    }
-
-    async function userLogout() {
-        await logout();
-        notificationStore.add({content: 'Logged out', color: 'success'});
-    }
-
-    async function checkApiError(payload) {
-        if (payload.response.status === 401) {
+    async function checkApiError(error) {
+        console.log(error)
+        if ( 401 <= error.response.status) {
             await logout();
         }
     }
 
-    function actionRouteLoggedIn() {
-        if (router.value.currentRoute.name === 'login' || router.value.currentRoute.name === 'home') {
-            router.value.push({name: 'private'});
-        }
-    }
-
-    async function resetPassword(username) {
+    async function resetPassword(email) {
         try {
             const response = (await Promise.all([
-                api.resetPassword(username),
+                api.resetPassword(email),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             notificationStore.add({content: 'Password recovery email sent', color: 'success'});
@@ -133,10 +127,10 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function updatePassword(payload) {
+    async function updatePassword(new_password) {
         try {
             await Promise.all([
-                api.updatePassword(payload.password, payload.token),
+                api.updatePassword(new_password, token.value),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]);
             notificationStore.add({content: 'Password successfully reset', color: 'success'});

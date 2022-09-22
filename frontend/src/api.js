@@ -10,7 +10,7 @@ function authHeaders(token) {
 }
 
 export const api = {
-  async logInGetToken(username, password) {
+  async loginGetToken(username, password) {
     const params = new URLSearchParams();
     params.append('username', username);
     params.append('password', password);
@@ -38,9 +38,9 @@ export const api = {
   async resetPassword(email) {
     return axios.post(`${apiUrl}/password-recovery/${email}`);
   },
-  async updatePassword(password, token) {
+  async updatePassword(new_password, token) {
     return axios.post(`${apiUrl}/reset-password/`, {
-      new_password: password,
+      new_password,
       token,
     });
   },

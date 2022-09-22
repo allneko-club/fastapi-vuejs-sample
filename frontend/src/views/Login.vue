@@ -30,6 +30,7 @@ import {Form} from "vee-validate";
 import * as yup from 'yup';
 import {useAuthStore} from "@/stores/useAuthStore";
 import TextInput from "@/components/fields/TextInput.vue";
+import router from '@/router'
 
 export default {
   name: 'Login',
@@ -44,6 +45,7 @@ export default {
 
     const onSubmit = async (values) => {
       await authStore.login(values.username, values.password)
+      await router.push({name: 'private'});
     };
 
     return {authStore, schema, onSubmit}
