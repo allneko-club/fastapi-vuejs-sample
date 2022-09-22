@@ -23,9 +23,3 @@ sentry_sdk.init(
 celery_broker = os.environ.get('celery_broker', 'amqp://guest@localhost//')
 celery_app = Celery('worker', broker=celery_broker)
 celery_app.autodiscover_tasks(['app.work'])
-
-celery_app.conf.task_routes = {'app.work.tasks.test_celery': 'main-queue'}
-
-
-if __name__ == '__main__':
-    celery_app.start()
