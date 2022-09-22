@@ -35,10 +35,10 @@ export const api = {
   async deleteUser(token, userId) {
     return axios.delete(`${apiUrl}/users/${userId}`, authHeaders(token));
   },
-  async resetPassword(email) {
-    return axios.post(`${apiUrl}/password-recovery/${email}`);
+  async recoverPassword(email) {
+    return axios.post(`${apiUrl}/recover-password/${email}`);
   },
-  async updatePassword(new_password, token) {
+  async resetPassword(new_password, token) {
     return axios.post(`${apiUrl}/reset-password/`, {
       new_password,
       token,

@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import {onMounted, ref} from 'vue'
 import {useRoute} from "vue-router";
 import {Form} from "vee-validate";
 import * as yup from 'yup';
@@ -51,10 +52,22 @@ export default {
   setup(props, context) {
     const adminStore = useAdminStore();
     const route = useRoute();
+    const userId = ref(route.params.id);
+    const user = ref(null)
+    const initialValues = ref({})
 
-    const userId = route.params.id;
-    //todo getUserByIdは一覧ページで取得したデータから検索している。直接このページにアクセスした場合は、エラーが出そう
-    const user = adminStore.getUserById(userId);
+    const getUser = async () => {
+      //todo getUserByIdは一覧ページで取得したデータから検索していため直接このページにアクセスした場合は、エラーが出そう
+      user.value = await adminStore.getUserById(userId.value);
+      initialValues.value = {
+        name: user.value.name,
+        email: user.value.email,
+        isActive: user.value.is_active,
+        isSuperuser: user.value.is_superuser,
+      };
+    }
+
+    onMounted(getUser)
 
     const schema = yup.object({
       name: yup.string(),
@@ -65,13 +78,6 @@ export default {
       password2: yup.string().label('password (confirm)')
           .oneOf([yup.ref('password1')], 'Passwords do not match'),
     });
-
-    const initialValues = {
-      name: user.name,
-      email: user.email,
-      isActive: user.is_active,
-      isSuperuser: user.is_superuser,
-    };
 
     const onSubmit = async (values) => {
       const data = {};

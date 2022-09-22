@@ -1,13 +1,16 @@
 <template>
-  <h2>Password Recovery</h2>
-  <p>A password recovery email will be sent to the registered account</p>
+  <h2>Reset Password</h2>
 
-  <Form @submit="onSubmit" :validation-schema="schema">
+  <Form :validation-schema="schema" @submit="onSubmit">
     <TextInput
-        name="email"
-        type="email"
-        label="email"
-        placeholder="Your email"
+        label="password"
+        name="password1"
+        type="password"
+    />
+    <TextInput
+        label="password (confirm)"
+        name="password2"
+        type="password"
     />
     <button>Recover Password</button>
   </Form>
@@ -18,15 +21,23 @@ import {Form} from "vee-validate";
 import * as yup from 'yup';
 import {useAuthStore} from "@/stores/useAuthStore";
 import TextInput from "@/components/fields/TextInput.vue";
+import {useRoute} from 'vue-router'
 
 export default {
   name: 'resetPassword',
   components: {Form, TextInput},
   setup(props, context) {
     const authStore = useAuthStore();
-    const schema = yup.object({email: yup.string().email().required()});
+    const route = useRoute()
+    const token = route.query.token
+    console.log(token);
+    const schema = yup.object({
+      password1: yup.string().required(),
+      password2: yup.string().required().label('password (confirm)').label('password')
+          .oneOf([yup.ref('password1')], 'Passwords do not match'),
+    });
     const onSubmit = async (values) => {
-      await authStore.resetPassword(values.email)
+      await authStore.resetPassword(values.password1, token)
     };
     return {schema, onSubmit}
   }

@@ -114,10 +114,10 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function resetPassword(email) {
+    async function recoverPassword(email) {
         try {
             const response = (await Promise.all([
-                api.resetPassword(email),
+                api.recoverPassword(email),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]))[0];
             notificationStore.add({content: 'Password recovery email sent', color: 'success'});
@@ -127,10 +127,10 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function updatePassword(new_password) {
+    async function resetPassword(new_password, token) {
         try {
             await Promise.all([
-                api.updatePassword(new_password, token.value),
+                api.resetPassword(new_password, token),
                 await new Promise((resolve) => setTimeout(() => resolve(), 500)),
             ]);
             notificationStore.add({content: 'Password successfully reset', color: 'success'});
@@ -151,7 +151,7 @@ export const useAuthStore = defineStore('auth', () => {
         userLogout,
         checkApiError,
         updateUserProfile,
-        resetPassword,
-        updatePassword
+        recoverPassword,
+        resetPassword
     }
 })

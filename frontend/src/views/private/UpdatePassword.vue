@@ -29,14 +29,14 @@ import router from "@/router";
 export default {
   components: {Form, TextInput},
   setup(props, context) {
+    const authStore = useAuthStore();
     const schema = yup.object({
-      password1: yup.string().required(),
-      password2: yup.string().required(),
+      password1: yup.string().required().label('password'),
+      password2: yup.string().required().label('password (confirm)')
+          .oneOf([yup.ref('password1')], 'Passwords do not match'),
     });
 
-    const authStore = useAuthStore();
     const onSubmit = async (values) => {
-      // todo authStore.updatePasswordに変更する
       await authStore.updateUserProfile({password: values.password1});
       await router.push({name: 'profile'});
     };
