@@ -9,5 +9,5 @@ if (env === 'production') {
   envApiUrl = `http://${import.meta.env.VITE_APP_DOMAIN_DEV}`;
 }
 
-export const apiUrl = envApiUrl + `${import.meta.env.VITE_ENDPOINT_PATH}`;
+export const apiUrl = envApiUrl;
 export const appName = import.meta.env.VITE_APP_NAME;
