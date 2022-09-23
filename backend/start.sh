@@ -33,5 +33,3 @@ fi
 
 # Start Gunicorn
 exec gunicorn -k "$WORKER_CLASS" -c "$GUNICORN_CONF" "$APP_MODULE"
-
-#exec uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
