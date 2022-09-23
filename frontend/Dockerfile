@@ -24,5 +24,5 @@ FROM nginx:1.23
 
 COPY --from=build-stage /app/dist/ /usr/share/nginx/html
 
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./nginx-backend-not-found.conf /etc/nginx/extra-conf.d/backend-not-found.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/nginx-backend-not-found.conf /etc/nginx/extra-conf.d/backend-not-found.conf
