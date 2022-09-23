@@ -114,7 +114,7 @@ services:
       - default
     env_file:
       - .env
-    command: /bin/sh -c "sleep 5s && celery flower --broker_api=http://guest:guest@queue:15672/api//"
+    command: /bin/sh -c "sleep 5s && celery --broker=amqp://guest:guest@queue:5672// flower"
     deploy:
       labels:
         - traefik.enable=true
