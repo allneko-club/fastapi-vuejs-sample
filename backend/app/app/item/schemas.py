@@ -1,31 +1,23 @@
 from pydantic import BaseModel
 
 
-class ItemBase(BaseModel):
+class ItemSchemaBase(BaseModel):
     title: str | None = None
     description: str | None = None
 
 
-class ItemCreateSchema(ItemBase):
+class ItemCreateSchema(ItemSchemaBase):
     title: str
 
 
-class ItemUpdateSchema(ItemBase):
+class ItemUpdateSchema(ItemSchemaBase):
     pass
 
 
-class ItemInDBSchemaBase(ItemBase):
+class ItemSchema(ItemSchemaBase):
     id: int
     title: str
     owner_id: int
 
     class Config:
         orm_mode = True
-
-
-class ItemSchema(ItemInDBSchemaBase):
-    pass
-
-
-class ItemInDBSchema(ItemInDBSchemaBase):
-    pass

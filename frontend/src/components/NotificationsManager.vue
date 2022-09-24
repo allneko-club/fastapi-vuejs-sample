@@ -1,77 +1,70 @@
 <template>
-    <div>
-        <v-snackbar auto-height :color="currentNotificationColor" v-model="show">
-            <v-progress-circular class="ma-2" indeterminate v-show="showProgress"></v-progress-circular>{{ currentNotificationContent }}
-            <v-btn flat @click.native="close">Close</v-btn>
-        </v-snackbar>
-    </div>
+  <div v-show="show" :class="currentNotificationColor">
+    {{ currentNotificationContent }}
+    <button @click="close">Close</button>
+  </div>
 </template>
-<script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { AppNotification } from '@/store/main/state';
-import { commitRemoveNotification } from '@/store/main/mutations';
-import { readFirstNotification } from '@/store/main/getters';
-import { dispatchRemoveNotification } from '@/store/main/actions';
 
-@Component
-export default class NotificationsManager extends Vue {
-    public show: boolean = false;
-    public text: string = '';
-    public showProgress: boolean = false;
-    public currentNotification: AppNotification | false = false;
+<script>
+import {useNotificationStore} from '@/stores/useNotificationStore';
+import {computed, ref, watch} from 'vue'
 
-    public async hide() {
-        this.show = false;
-        await new Promise((resolve, reject) => setTimeout(() => resolve(), 500));
+export default {
+  setup(props, context) {
+    const show = ref(false);
+    const currentNotification = ref(false);
+    const store = useNotificationStore();
+    const firstNotification = computed(() => store.notifications.length > 0 && store.notifications[0]);
+
+    const currentNotificationContent = computed(
+        () => currentNotification.value && currentNotification.value.content
+    )
+    const currentNotificationColor = computed(
+        () => currentNotification.value && currentNotification.value.color || 'info'
+    )
+
+    const hide = async () => {
+      show.value = false;
+      await new Promise((resolve, reject) => setTimeout(() => resolve(), 500));
     }
 
-    public async close() {
-        await this.hide();
-        await this.removeCurrentNotification();
+    const close = async () => {
+      await hide();
+      if (currentNotification.value) {
+        store.remove(currentNotification.value);
+      }
     }
 
-    public async removeCurrentNotification() {
-        if (this.currentNotification) {
-            commitRemoveNotification(this.$store, this.currentNotification);
-        }
+    const updateNotification = async (newNotification, oldNotification) => {
+      if (show.value) {
+        await hide();
+      }
+      if (oldNotification) {
+        store.remove(oldNotification);
+      }
+      currentNotification.value = newNotification;
+      if (newNotification) {
+        show.value = true;
+        store.removeNotification(newNotification, 3000);
+      }
     }
+    watch(firstNotification, updateNotification);
 
-    public get firstNotification() {
-        return readFirstNotification(this.$store);
-    }
-
-    public async setNotification(notification: AppNotification | false) {
-        if (this.show) {
-            await this.hide();
-        }
-        if (notification) {
-            this.currentNotification = notification;
-            this.showProgress = notification.showProgress || false;
-            this.show = true;
-        } else {
-            this.currentNotification = false;
-        }
-    }
-
-    @Watch('firstNotification')
-    public async onNotificationChange(
-        newNotification: AppNotification | false,
-        oldNotification: AppNotification | false,
-    ) {
-        if (newNotification !== this.currentNotification) {
-            await this.setNotification(newNotification);
-            if (newNotification) {
-                dispatchRemoveNotification(this.$store, { notification: newNotification, timeout: 6500 });
-            }
-        }
-    }
-
-    public get currentNotificationContent() {
-        return this.currentNotification && this.currentNotification.content || '';
-    }
-
-    public get currentNotificationColor() {
-        return this.currentNotification && this.currentNotification.color || 'info';
-    }
+    return {show, currentNotificationContent, currentNotificationColor, close}
+  },
 }
 </script>
+
+<style scoped>
+.info {
+  color: blue;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+</style>

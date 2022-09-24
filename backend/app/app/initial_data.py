@@ -22,7 +22,7 @@ def init_db(db: Session) -> None:
 
 
 def init() -> None:
-    Base.metadata.create_all(bind=engine)  # 追加
+    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     init_db(db)
 

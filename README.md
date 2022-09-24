@@ -1,4 +1,58 @@
-# fastapi
+# FastAPI Sample
+
+fastapiとVue.js v3 を使ったサンプルプロジェクト
+
+[Full Stack FastAPI and PostgreSQL](https://github.com/tiangolo/full-stack-fastapi-postgresql)を使って生成。しかし2020年以降更新されておらず、使用しているフレームワークやパッケージが古かったので最新のスタイルに大幅変更。
+
+## Features
+
+### frontend
+* <a href="https://github.com/tiangolo/fastapi" class="external-link" target="_blank">**FastAPI**</a>
+* python 3.10
+* ドメイン駆動設計(DDD)風にディレクトリ構造を変更
+* **Secure password** hashing by default.
+* **JWT トークン認証**
+* **SQLAlchemy** models.
+* **Alembic** migrations.
+* **CORS** (Cross Origin Resource Sharing).
+* **Celery** worker that can import and use models and code from the rest of the backend selectively.
+* **Pytest** tests framework
+* **factory boy** model factory for tests.
+
+### backend
+* **Vue.js v3** composition API Style
+* **VeeValidate v4**
+* **pinia v2**
+* **Vue-router**
+* Generated with **Vite**
+* **JWT Authentication** handling.
+* Not use UI Framework (include your favorite UI Framework easy)
+* Docker server based on **Nginx** (configured to play nicely with Vue-router).
+* .env file support at /backend/.env
+* common pages
+  * Login, Logout
+  * Admin view (superuser only), Private view (login user only).
+  * Admin page with user creation, edition, and deletion.
+  * Self user edition.
+
+
+### others
+* Full **Docker** integration (Docker based).
+* Docker Swarm Mode deployment.
+* **Docker Compose** integration and optimization for local development.
+* **Production ready** Python web server using Gunicorn.
+* **PGAdmin** for PostgreSQL database, you can modify it to use PHPMyAdmin and MySQL easily.
+* **Flower** for Celery jobs monitoring.
+* Load balancing between frontend and backend with **Traefik**, so you can have both under the same domain, separated by path, but served by different containers.
+* Traefik integration, including Let's Encrypt **HTTPS** certificates automatic generation.
+* GitLab **CI** (continuous integration), including frontend and backend testing.
+
+
+### 注意事項
+* デフォルトではメール機能をオフにしているため、パスワードリカバリーなどメールを送信する機能を使うとエラーが発生します。
+
+---
+以下はプロジェクト生成時に作成された文章を編集したものです。localhostでの動作は確認しましたが、ドメイン名を変更するStagingやProductionパターンの動作は未確認です。
 
 ## Backend Requirements
 
@@ -84,52 +138,6 @@ The changes to that file only affect the local development environment, not the 
 
 For example, the directory with the backend code is mounted as a Docker "host volume", mapping the code you change live to the directory inside the container. That allows you to test your changes right away, without having to build the Docker image again. It should only be done during development, for production, you should build the Docker image with a recent version of the backend code. But during development, it allows you to iterate very fast.
 
-There is also a command override that runs `/start-reload.sh` (included in the base image) instead of the default `/start.sh` (also included in the base image). It starts a single server process (instead of multiple, as would be for production) and reloads the process whenever the code changes. Have in mind that if you have a syntax error and save the Python file, it will break and exit, and the container will stop. After that, you can restart the container by fixing the error and running again:
-
-```console
-$ docker-compose up -d
-```
-
-There is also a commented out `command` override, you can uncomment it and comment the default one. It makes the backend container run a process that does "nothing", but keeps the container alive. That allows you to get inside your running container and execute commands inside, for example a Python interpreter to test installed dependencies, or start the development server that reloads when it detects changes, or start a Jupyter Notebook session.
-
-To get inside the container with a `bash` session you can start the stack with:
-
-```console
-$ docker-compose up -d
-```
-
-and then `exec` inside the running container:
-
-```console
-$ docker-compose exec backend bash
-```
-
-You should see an output like:
-
-```console
-root@7f2607af31c3:/app#
-```
-
-that means that you are in a `bash` session inside your container, as a `root` user, under the `/app` directory.
-
-There you can use the script `/start-reload.sh` to run the debug live reloading server. You can run that script from inside the container with:
-
-```console
-$ bash /start-reload.sh
-```
-
-...it will look like:
-
-```console
-root@7f2607af31c3:/app# bash /start-reload.sh
-```
-
-and then hit enter. That runs the live reloading server that auto reloads when it detects code changes.
-
-Nevertheless, if it doesn't detect a change but a syntax error, it will just stop with an error. But as the container is still alive and you are in a Bash session, you can quickly restart it after fixing the error, running the same command ("up arrow" and "Enter").
-
-...this previous detail is what makes it useful to have the container alive doing nothing and then, in a Bash session, make it run the live reload server.
-
 ### Backend tests
 
 To test the backend run:
@@ -155,7 +163,7 @@ The `./backend/app` directory is mounted as a "host volume" inside the docker co
 You can rerun the test on live code:
 
 ```Bash
-docker-compose exec backend /app/tests-start.sh
+docker-compose exec backend /tests-start.sh
 ```
 
 #### Test running stack
@@ -163,7 +171,7 @@ docker-compose exec backend /app/tests-start.sh
 If your stack is already up and you just want to run the tests, you can use:
 
 ```bash
-docker-compose exec backend /app/tests-start.sh
+docker-compose exec backend /tests-start.sh
 ```
 
 That `/app/tests-start.sh` script just calls `pytest` after making sure that the rest of the stack is running. If you need to pass extra arguments to `pytest`, you can pass them to that command and they will be forwarded.
@@ -171,7 +179,7 @@ That `/app/tests-start.sh` script just calls `pytest` after making sure that the
 For example, to stop on first error:
 
 ```bash
-docker-compose exec backend bash /app/tests-start.sh -x
+docker-compose exec backend bash /tests-start.sh -x
 ```
 
 #### Test Coverage
@@ -190,47 +198,6 @@ To run the tests in a running stack with coverage HTML reports:
 docker-compose exec backend bash /app/tests-start.sh --cov-report=html
 ```
 
-### Live development with Python Jupyter Notebooks
-
-If you know about Python [Jupyter Notebooks](http://jupyter.org/), you can take advantage of them during local development.
-
-The `docker-compose.override.yml` file sends a variable `env` with a value `dev` to the build process of the Docker image (during local development) and the `Dockerfile` has steps to then install and configure Jupyter inside your Docker container.
-
-So, you can enter into the running Docker container:
-
-```bash
-docker-compose exec backend bash
-```
-
-And use the environment variable `$JUPYTER` to run a Jupyter Notebook with everything configured to listen on the public port (so that you can use it from your browser).
-
-It will output something like:
-
-```console
-root@73e0ec1f1ae6:/app# $JUPYTER
-[I 12:02:09.975 NotebookApp] Writing notebook server cookie secret to /root/.local/share/jupyter/runtime/notebook_cookie_secret
-[I 12:02:10.317 NotebookApp] Serving notebooks from local directory: /app
-[I 12:02:10.317 NotebookApp] The Jupyter Notebook is running at:
-[I 12:02:10.317 NotebookApp] http://(73e0ec1f1ae6 or 127.0.0.1):8888/?token=f20939a41524d021fbfc62b31be8ea4dd9232913476f4397
-[I 12:02:10.317 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
-[W 12:02:10.317 NotebookApp] No web browser found: could not locate runnable browser.
-[C 12:02:10.317 NotebookApp]
-
-    Copy/paste this URL into your browser when you connect for the first time,
-    to login with a token:
-        http://(73e0ec1f1ae6 or 127.0.0.1):8888/?token=f20939a41524d021fbfc62b31be8ea4dd9232913476f4397
-```
-
-you can copy that URL and modify the "host" to be `localhost` or the domain you are using for development (e.g. `local.dockertoolbox.tiangolo.com`), in the case above, it would be, e.g.:
-
-```
-http://localhost:8888/token=f20939a41524d021fbfc62b31be8ea4dd9232913476f4397
-```
-
- and then open it in your browser.
-
-You will have a full Jupyter Notebook running inside your container that has direct access to your database by the container name (`db`), etc. So, you can just run sections of your backend code directly, for example with [VS Code Python Jupyter Interactive Window](https://code.visualstudio.com/docs/python/jupyter-support-py) or [Hydrogen](https://github.com/nteract/hydrogen).
-
 ### Migrations
 
 As during local development your app directory is mounted as a volume inside the container, you can also run the migrations with `alembic` commands inside the container and the migration code will be in your app directory (instead of being only inside the container). So you can add it to your git repository.
@@ -243,7 +210,7 @@ Make sure you create a "revision" of your models and that you "upgrade" your dat
 $ docker-compose exec backend bash
 ```
 
-* If you created a new model in `./backend/app/app/models/`, make sure to import it in `./backend/app/app/db/base.py`, that Python module (`base.py`) that imports all the models will be used by Alembic.
+* If you created a new model, make sure to import it in `./backend/app/alembic/env.py`.
 
 * After changing a model (for example, adding a column), inside the container, create a revision, e.g.:
 
@@ -259,7 +226,7 @@ $ alembic revision --autogenerate -m "Add column last_name to User model"
 $ alembic upgrade head
 ```
 
-If you don't want to use migrations at all, uncomment the line in the file at `./backend/app/app/db/init_db.py` with:
+If you don't want to use migrations at all, uncomment the line in the file at `./backend/app/app/initial_data.py` with:
 
 ```python
 Base.metadata.create_all(bind=engine)
@@ -272,22 +239,6 @@ $ alembic upgrade head
 ```
 
 If you don't want to start with the default models and want to remove them / modify them, from the beginning, without having any previous revision, you can remove the revision files (`.py` Python files) under `./backend/app/alembic/versions/`. And then create a first migration as described above.
-
-### Development with Docker Toolbox
-
-If you are using **Docker Toolbox** in Windows or macOS instead of **Docker for Windows** or **Docker for Mac**, Docker will be running in a VirtualBox Virtual Machine, and it will have a local IP different than `127.0.0.1`, which is the IP address for `localhost` in your machine.
-
-The address of your Docker Toolbox virtual machine would probably be `192.168.99.100` (that is the default).
-
-As this is a common case, the domain `local.dockertoolbox.tiangolo.com` points to that (private) IP, just to help with development (actually `dockertoolbox.tiangolo.com` and all its subdomains point to that IP). That way, you can start the stack in Docker Toolbox, and use that domain for development. You will be able to open that URL in Chrome and it will communicate with your local Docker Toolbox directly as if it was a cloud server, including CORS (Cross Origin Resource Sharing).
-
-If you used the default CORS enabled domains while generating the project, `local.dockertoolbox.tiangolo.com` was configured to be allowed. If you didn't, you will need to add it to the list in the variable `BACKEND_CORS_ORIGINS` in the `.env` file.
-
-To configure it in your stack, follow the section **Change the development "domain"** below, using the domain `local.dockertoolbox.tiangolo.com`.
-
-After performing those steps you should be able to open: http://local.dockertoolbox.tiangolo.com and it will be server by your stack in your Docker Toolbox virtual machine.
-
-Check all the corresponding available URLs in the section at the end.
 
 ### Development in `localhost` with a custom domain
 
@@ -305,7 +256,7 @@ Check all the corresponding available URLs in the section at the end.
 
 ### Development with a custom IP
 
-If you are running Docker in an IP address different than `127.0.0.1` (`localhost`) and `192.168.99.100` (the default of Docker Toolbox), you will need to perform some additional steps. That will be the case if you are running a custom Virtual Machine, a secondary Docker Toolbox or your Docker is located in a different machine in your network.
+If you are running Docker in an IP address different than `127.0.0.1` (`localhost`), you will need to perform some additional steps. That will be the case if you are running a custom Virtual Machine or your Docker is located in a different machine in your network.
 
 In that case, you will need to use a fake local domain (`dev.fastapi.com`) and make your computer think that the domain is is served by the custom IP (e.g. `192.168.99.150`).
 
@@ -357,16 +308,16 @@ That variable will be used by the Docker Compose files.
 * Now open the file located at `./frontend/.env`. It would have a line like:
 
 ```
-VUE_APP_DOMAIN_DEV=localhost
+VITE_APP_DOMAIN_DEV=localhost
 ```
 
 * Change that line to the domain you are going to use, e.g.:
 
 ```
-VUE_APP_DOMAIN_DEV=localhost.tiangolo.com
+VITE_APP_DOMAIN_DEV=localhost.tiangolo.com
 ```
 
-That variable will make your frontend communicate with that domain when interacting with your backend API, when the other variable `VUE_APP_ENV` is set to `development`.
+That variable will make your frontend communicate with that domain when interacting with your backend API, when the other variable `VITE_APP_ENV` is set to `development`.
 
 After changing the two lines, you can re-start your stack with:
 
@@ -383,42 +334,30 @@ and check all the corresponding available URLs in the section at the end.
 ```bash
 cd frontend
 npm install
-npm run serve
+npm run dev
 ```
 
-Then open your browser at http://localhost:8080
+Then open your browser
 
 Notice that this live server is not running inside Docker, it is for local development, and that is the recommended workflow. Once you are happy with your frontend, you can build the frontend Docker image and start it, to test it in a production-like environment. But compiling the image at every change will not be as productive as running the local development server with live reload.
 
 Check the file `package.json` to see other available options.
-
-If you have Vue CLI installed, you can also run `vue ui` to control, configure, serve, and analyze your application using a nice local web user interface.
 
 If you are only developing the frontend (e.g. other team members are developing the backend) and there is a staging environment already deployed, you can make your local development code use that staging API instead of a full local Docker Compose stack.
 
 To do that, modify the file `./frontend/.env`, there's a section with:
 
 ```
-VUE_APP_ENV=development
-# VUE_APP_ENV=staging
+VITE_APP_ENV=development
+# VITE_APP_ENV=staging
 ```
 
 * Switch the comment, to:
 
 ```
-# VUE_APP_ENV=development
-VUE_APP_ENV=staging
+# VITE_APP_ENV=development
+VITE_APP_ENV=staging
 ```
-
-### Removing the frontend
-
-If you are developing an API-only app and want to remove the frontend, you can do it easily:
-
-* Remove the `./frontend` directory.
-* In the `docker-compose.yml` file, remove the whole service / section `frontend`.
-* In the `docker-compose.override.yml` file, remove the whole service / section `frontend`.
-
-Done, you have a frontend-less (api-only) app. 🔥 🚀
 
 ---
 
@@ -749,24 +688,6 @@ Flower: http://localhost:5555
 
 Traefik UI: http://localhost:8090
 
-### Development with Docker Toolbox URLs
-
-Development URLs, for local development.
-
-Frontend: http://local.dockertoolbox.tiangolo.com
-
-Backend: http://local.dockertoolbox.tiangolo.com/api/
-
-Automatic Interactive Docs (Swagger UI): https://local.dockertoolbox.tiangolo.com/docs
-
-Automatic Alternative Docs (ReDoc): https://local.dockertoolbox.tiangolo.com/redoc
-
-PGAdmin: http://local.dockertoolbox.tiangolo.com:5050
-
-Flower: http://local.dockertoolbox.tiangolo.com:5555
-
-Traefik UI: http://local.dockertoolbox.tiangolo.com:8090
-
 ### Development with a custom IP URLs
 
 Development URLs, for local development.
@@ -802,32 +723,3 @@ PGAdmin: http://localhost.tiangolo.com:5050
 Flower: http://localhost.tiangolo.com:5555
 
 Traefik UI: http://localhost.tiangolo.com:8090
-
-## Project generation and updating, or re-generating
-
-This project was generated using https://github.com/tiangolo/full-stack-fastapi-postgresql with:
-
-```bash
-pip install cookiecutter
-cookiecutter https://github.com/tiangolo/full-stack-fastapi-postgresql
-```
-
-You can check the variables used during generation in the file `cookiecutter-config-file.yml`.
-
-You can generate the project again with the same configurations used the first time.
-
-That would be useful if, for example, the project generator (`tiangolo/full-stack-fastapi-postgresql`) was updated and you wanted to integrate or review the changes.
-
-You could generate a new project with the same configurations as this one in a parallel directory. And compare the differences between the two, without having to overwrite your current code but being able to use the same variables used for your current project.
-
-To achieve that, the generated project includes the file `cookiecutter-config-file.yml` with the current variables used.
-
-You can use that file while generating a new project to reuse all those variables.
-
-For example, run:
-
-```console
-$ cookiecutter --config-file ./cookiecutter-config-file.yml --output-dir ../project-copy https://github.com/tiangolo/full-stack-fastapi-postgresql
-```
-
-That will use the file `cookiecutter-config-file.yml` in the current directory (in this project) to generate a new project inside a sibling directory `project-copy`.

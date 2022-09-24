@@ -15,8 +15,7 @@ class Settings(BaseSettings):
     SERVER_NAME: str = '127.0.0.1'
     SERVER_HOST: AnyHttpUrl = f'http://{SERVER_NAME}'
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
-    # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
+    # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", "http://localhost:8080"]'
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
@@ -58,7 +57,7 @@ class Settings(BaseSettings):
 
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
     EMAIL_TEMPLATES_DIR: str = str(BASE_DIR / "app/app/mail/templates/build")
-    EMAILS_ENABLED: bool = False
+    EMAILS_ENABLED: bool = True
 
     @validator("EMAILS_ENABLED", pre=True)
     def get_emails_enabled(cls, v: bool, values: dict[str, Any]):

@@ -1,9 +1,11 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
+FROM python:3.10
 
 WORKDIR /app/
 
+EXPOSE 80
+
 # Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python3 - && \
     cd /usr/local/bin && \
     ln -s /opt/poetry/bin/poetry && \
     poetry config virtualenvs.create false
@@ -15,11 +17,15 @@ COPY ./app/pyproject.toml ./app/poetry.lock* /app/
 ARG INSTALL_DEV=false
 RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; else poetry install --no-root --no-dev ; fi"
 
-# For development, Jupyter remote kernel, Hydrogen
-# Using inside the container:
-# jupyter lab --ip=0.0.0.0 --allow-root --NotebookApp.custom_display_url=http://127.0.0.1:8888
-ARG INSTALL_JUPYTER=false
-RUN bash -c "if [ $INSTALL_JUPYTER == 'true' ] ; then pip install jupyterlab ; fi"
+COPY ./start.sh /start.sh
+RUN chmod +x /start.sh
+
+COPY ./gunicorn_conf.py /gunicorn_conf.py
+
+COPY ./app/tests-start.sh /tests-start.sh
+RUN chmod +x /tests-start.sh
 
 COPY ./app /app
 ENV PYTHONPATH=/app
+
+CMD ["/start.sh"]

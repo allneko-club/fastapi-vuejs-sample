@@ -102,13 +102,13 @@ def test_get_users_normal_user_me(client, normal_user_token_headers):
 
 def test_update_user_me(client, normal_user_token_headers):
     password = fake.pystr()
-    full_name = 'full name'
-    data = {"password": password, "full_name": full_name}
+    name = 'name'
+    data = {"password": password, "name": name}
 
     r = client.put(f"{settings.API_V1_STR}/users/me", headers=normal_user_token_headers, json=data)
     current_user = r.json()
     assert current_user
-    assert current_user["full_name"] == full_name
+    assert current_user["name"] == name
 
 
 # -------------
@@ -127,13 +127,13 @@ def test_create_user_open(mock, client, db):
     user = crud_user.get_by_email(db, email=username)
     assert user
     assert user.email == created_user["email"]
-    assert user.full_name is None
+    assert user.name is None
 
 
 @patch('app.user.routers.user.settings')
 def test_create_user_open_not_allowed(mock, client):
     mock.USERS_OPEN_REGISTRATION = False
-    data = {'email': fake.email(), 'password': 'password', 'full_name': 'Full Name'}
+    data = {'email': fake.email(), 'password': 'password', 'name': 'name'}
     r = client.post(f'{settings.API_V1_STR}/users/open', json=data)
     assert 403 == r.status_code
 
@@ -186,7 +186,7 @@ def test_update_user(client, superuser_token_headers, db):
 
 def test_update_user_by_normal_user(client, normal_user_token_headers, db):
     user = db.query(User).first()
-    data = {'full_name': 'Full Name'}
+    data = {'name': 'Full Name'}
     r = client.post(
         f"{settings.API_V1_STR}/users/{user.id}", headers=normal_user_token_headers, json=data,
     )

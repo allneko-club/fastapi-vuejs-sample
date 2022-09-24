@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db
 from app.core.config import settings
+from app.core.schemas import MsgSchema
 from app.user.cruds import crud_user
 from app.user.dependencies import get_current_active_superuser, get_current_active_user
 from app.mail.utils import send_new_account_email
@@ -56,7 +57,7 @@ def read_user_me(
 def update_user_me(
     email: EmailStr = Body(None),
     password: str = Body(None),
-    full_name: str = Body(None),
+    name: str = Body(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
@@ -67,8 +68,8 @@ def update_user_me(
     user_in = UserUpdateSchema(**stored_data)
     if password is not None:
         user_in.password = password
-    if full_name is not None:
-        user_in.full_name = full_name
+    if name is not None:
+        user_in.name = name
     if email is not None:
         user_in.email = email
     user = crud_user.update(db, db_obj=current_user, obj_in=user_in)
@@ -79,7 +80,7 @@ def update_user_me(
 def create_user_open(
     password: str = Body(),
     email: EmailStr = Body(),
-    full_name: str = Body(None),
+    name: str = Body(None),
     db: Session = Depends(get_db),
 ):
     """
@@ -96,7 +97,7 @@ def create_user_open(
             status_code=400,
             detail="The user with this username already exists in the system",
         )
-    user_in = UserCreateSchema(password=password, email=email, full_name=full_name)
+    user_in = UserCreateSchema(password=password, email=email, name=name)
     user = crud_user.create(db, user_in)
     return user
 
@@ -129,3 +130,14 @@ def update_user(
         raise HTTPException(status_code=404, detail="User not found")
     user = crud_user.update(db, db_obj=user, obj_in=user_in)
     return user
+
+
+@router.delete("/{user_id}", response_model=MsgSchema)
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_superuser),
+):
+    crud_user.remove(db, id=user_id)
+    # todo 削除系のreturnはMsgSchemaで良いか確認
+    return {"msg": "ok"}

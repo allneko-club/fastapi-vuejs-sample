@@ -11,7 +11,7 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = Session
         sqlalchemy_session_persistence = 'commit'
 
-    full_name = factory.Sequence(lambda n: "User_%d" % n)
+    name = factory.Sequence(lambda n: "User_%d" % n)
     email = factory.Sequence(lambda n: "test%d@example.com" % n)
     hashed_password = get_password_hash('password')
 

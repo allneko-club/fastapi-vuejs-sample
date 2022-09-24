@@ -57,11 +57,8 @@ async def test_token(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@router.post("/password-recovery/{email}", response_model=MsgSchema)
+@router.post("/recover-password/{email}", response_model=MsgSchema)
 def recover_password(email: str, db: Session = Depends(get_db)):
-    """
-    Password Recovery
-    """
     user = crud_user.get_by_email(db, email=email)
 
     if not user:
