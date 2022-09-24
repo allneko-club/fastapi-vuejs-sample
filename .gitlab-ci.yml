@@ -22,7 +22,7 @@ build-stag:
   script:
     - TAG=stag FRONTEND_ENV=staging sh ./scripts/build-push.sh
   only:
-    - master
+    - develop
   tags:
     - build
     - test
@@ -50,7 +50,7 @@ deploy-stag:
     name: staging
     url: https://stag.localhost
   only:
-    - master
+    - develop
   tags:
     - swarm
     - stag
