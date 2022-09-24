@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import {useNotificationStore} from "@/stores/useNotificationStore";
+import {useNotificationStore} from '@/stores/useNotificationStore';
 import {computed, ref, watch} from 'vue'
 
 export default {
@@ -14,7 +14,7 @@ export default {
     const show = ref(false);
     const currentNotification = ref(false);
     const store = useNotificationStore();
-    const firstNotification = computed(() => store.notifications.length > 0 && store.notifications[0])
+    const firstNotification = computed(() => store.notifications.length > 0 && store.notifications[0]);
 
     const currentNotificationContent = computed(
         () => currentNotification.value && currentNotification.value.content
@@ -40,7 +40,7 @@ export default {
         await hide();
       }
       if (oldNotification) {
-        store.remove(oldNotification)
+        store.remove(oldNotification);
       }
       currentNotification.value = newNotification;
       if (newNotification) {
@@ -48,7 +48,7 @@ export default {
         store.removeNotification(newNotification, 3000);
       }
     }
-    watch(firstNotification, updateNotification)
+    watch(firstNotification, updateNotification);
 
     return {show, currentNotificationContent, currentNotificationColor, close}
   },

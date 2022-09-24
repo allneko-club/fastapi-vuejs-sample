@@ -6,11 +6,11 @@
 </template>
 
 <script>
-import {useAuthStore} from "@/stores/useAuthStore";
-import Header from "@/components/Header.vue";
+import {useAuthStore} from '@/stores/useAuthStore';
+import Header from '@/components/Header.vue';
 
 export default {
-  name: "Main",
+  name: 'Main',
   components: {Header},
   beforeRouteEnter(to, from, next) {
     const authStore = useAuthStore();

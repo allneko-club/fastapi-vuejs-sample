@@ -1,13 +1,13 @@
-import {computed, ref} from "vue";
+import {computed, ref} from 'vue';
 import {defineStore} from 'pinia';
 
-import {api} from "@/api";
-import {useAuthStore} from "@/stores/useAuthStore";
-import {useNotificationStore} from "@/stores/useNotificationStore";
+import {api} from '@/api';
+import {useAuthStore} from '@/stores/useAuthStore';
+import {useNotificationStore} from '@/stores/useNotificationStore';
 
 export const useAdminStore = defineStore('admin', () => {
   // properties
-  const users = ref([])
+  const users = ref([]);
   const authStore = useAuthStore();
   const notificationStore = useNotificationStore();
   // getters
@@ -30,7 +30,7 @@ export const useAdminStore = defineStore('admin', () => {
     try {
       const response = await api.getUsers(authStore.token);
       if (response) {
-        users.value = response.data
+        users.value = response.data;
       }
     } catch (error) {
       await authStore.checkApiError(error);

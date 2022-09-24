@@ -17,20 +17,19 @@
 </template>
 
 <script>
-import {Form} from "vee-validate";
+import {Form} from 'vee-validate';
 import * as yup from 'yup';
-import {useAuthStore} from "@/stores/useAuthStore";
-import TextInput from "@/components/fields/TextInput.vue";
-import {useRoute} from 'vue-router'
+import {useAuthStore} from '@/stores/useAuthStore';
+import TextInput from '@/components/fields/TextInput.vue';
+import {useRoute} from 'vue-router';
 
 export default {
   name: 'resetPassword',
   components: {Form, TextInput},
   setup(props, context) {
     const authStore = useAuthStore();
-    const route = useRoute()
-    const token = route.query.token
-    console.log(token);
+    const route = useRoute();
+    const token = route.query.token;
     const schema = yup.object({
       password1: yup.string().required(),
       password2: yup.string().required().label('password (confirm)').label('password')

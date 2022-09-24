@@ -1,7 +1,7 @@
 const routes = [
   {
-    path: "/private",
-    name: "private",
+    path: '/private',
+    name: 'private',
     component: () => import('@/views/private/Private.vue'),
     children: [
       {

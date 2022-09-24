@@ -37,12 +37,12 @@
 </template>
 
 <script>
-import {Form} from "vee-validate";
+import {Form} from 'vee-validate';
 import * as yup from 'yup';
-import {useAdminStore} from "@/stores/useAdminStore";
-import TextInput from "@/components/fields/TextInput.vue";
-import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
-import router from "@/router";
+import {useAdminStore} from '@/stores/useAdminStore';
+import TextInput from '@/components/fields/TextInput.vue';
+import SingleCheckbox from '@/components/fields/SingleCheckbox.vue';
+import router from '@/router';
 
 export default {
   components: {Form, TextInput, SingleCheckbox},

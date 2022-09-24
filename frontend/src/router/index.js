@@ -1,7 +1,7 @@
-import {createRouter, createWebHistory} from "vue-router";
-import adminRoutes from "@/router/admin";
-import publicRoutes from "@/router/public";
-import privateRoutes from "@/router/private";
+import {createRouter, createWebHistory} from 'vue-router';
+import adminRoutes from '@/router/admin';
+import publicRoutes from '@/router/public';
+import privateRoutes from '@/router/private';
 
 const routes = publicRoutes.concat(privateRoutes, adminRoutes);
 

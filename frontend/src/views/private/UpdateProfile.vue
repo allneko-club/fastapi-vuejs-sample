@@ -19,12 +19,12 @@
 </template>
 
 <script>
-import {Form} from "vee-validate";
+import {Form} from 'vee-validate';
 import * as yup from 'yup';
 
-import TextInput from "@/components/fields/TextInput.vue";
-import {useAuthStore} from "@/stores/useAuthStore";
-import router from "@/router";
+import TextInput from '@/components/fields/TextInput.vue';
+import {useAuthStore} from '@/stores/useAuthStore';
+import router from '@/router';
 
 export default {
   components: {Form, TextInput},

@@ -9,16 +9,16 @@
 </template>
 
 <script>
-import {onMounted} from "vue";
-import {useAdminStore} from "@/stores/useAdminStore";
-import {storeToRefs} from 'pinia'
+import {onMounted} from 'vue';
+import {useAdminStore} from '@/stores/useAdminStore';
+import {storeToRefs} from 'pinia';
 
 export default {
   setup(props, context) {
     const adminStore = useAdminStore();
     const {users} = storeToRefs(adminStore);
     const {deleteUser, fetchUsers} = adminStore;
-    onMounted(fetchUsers)
+    onMounted(fetchUsers);
     return {users, deleteUser}
   }
 }

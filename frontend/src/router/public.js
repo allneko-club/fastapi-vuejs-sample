@@ -1,13 +1,13 @@
 const routes = [
   {
-    path: "/",
-    name: "home",
-    component: () => import("@/views/Home.vue"),
+    path: '/',
+    name: 'home',
+    component: () => import('@/views/Home.vue'),
     children: [
       {
-        path: "login",
-        name: "login",
-        component: () => import("@/views/Login.vue"),
+        path: 'login',
+        name: 'login',
+        component: () => import('@/views/Login.vue'),
       },
       {
         path: 'recover-password',

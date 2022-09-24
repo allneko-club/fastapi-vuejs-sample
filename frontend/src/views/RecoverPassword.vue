@@ -14,10 +14,10 @@
 </template>
 
 <script>
-import {Form} from "vee-validate";
+import {Form} from 'vee-validate';
 import * as yup from 'yup';
-import {useAuthStore} from "@/stores/useAuthStore";
-import TextInput from "@/components/fields/TextInput.vue";
+import {useAuthStore} from '@/stores/useAuthStore';
+import TextInput from '@/components/fields/TextInput.vue';
 
 export default {
   name: 'recoverPassword',

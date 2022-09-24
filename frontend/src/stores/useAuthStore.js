@@ -1,17 +1,17 @@
-import {computed, ref} from "vue";
+import {computed, ref} from 'vue';
 import {defineStore} from 'pinia';
 import {useRouter} from 'vue-router'
 
-import {api} from "@/api";
+import {api} from '@/api';
 import {getLocalToken, removeLocalToken, saveLocalToken} from '@/localStorage';
-import {useNotificationStore} from "@/stores/useNotificationStore";
+import {useNotificationStore} from '@/stores/useNotificationStore';
 
 export const useAuthStore = defineStore('auth', () => {
     // properties
-    const loginError = ref(false)
-    const userProfile = ref(null)
-    const token = ref('')
-    const isLoggedIn = ref(false)
+    const loginError = ref(false);
+    const userProfile = ref(null);
+    const token = ref('');
+    const isLoggedIn = ref(false);
     const notificationStore = useNotificationStore();
     const router = ref(useRouter());
 
@@ -108,7 +108,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function checkApiError(error) {
-        console.log(error)
+        console.log(error);
         if ( 401 <= error.response.status) {
             await logout();
         }

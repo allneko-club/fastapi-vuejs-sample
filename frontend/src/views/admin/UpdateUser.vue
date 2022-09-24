@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import {onMounted, ref} from 'vue'
-import {useRoute} from "vue-router";
-import {Form} from "vee-validate";
+import {onMounted, ref} from 'vue';
+import {useRoute} from 'vue-router';
+import {Form} from 'vee-validate';
 import * as yup from 'yup';
 
-import {useAdminStore} from "@/stores/useAdminStore";
-import TextInput from "@/components/fields/TextInput.vue";
-import SingleCheckbox from "@/components/fields/SingleCheckbox.vue";
-import router from "@/router";
+import {useAdminStore} from '@/stores/useAdminStore';
+import TextInput from '@/components/fields/TextInput.vue';
+import SingleCheckbox from '@/components/fields/SingleCheckbox.vue';
+import router from '@/router';
 
 export default {
   components: {Form, TextInput, SingleCheckbox},
@@ -53,8 +53,8 @@ export default {
     const adminStore = useAdminStore();
     const route = useRoute();
     const userId = ref(route.params.id);
-    const user = ref(null)
-    const initialValues = ref({})
+    const user = ref(null);
+    const initialValues = ref({});
 
     const getUser = async () => {
       //todo getUserByIdは一覧ページで取得したデータから検索していため直接このページにアクセスした場合は、エラーが出そう
