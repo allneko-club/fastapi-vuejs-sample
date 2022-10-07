@@ -2,24 +2,15 @@
 
 fastapiとVue.js v3 を使ったサンプルプロジェクト
 
-[Full Stack FastAPI and PostgreSQL](https://github.com/tiangolo/full-stack-fastapi-postgresql)を使って生成。しかし2020年以降更新されておらず、使用しているフレームワークやパッケージが古かったので最新のスタイルに大幅変更。
+[Full Stack FastAPI and PostgreSQL](https://github.com/tiangolo/full-stack-fastapi-postgresql)を使って生成し、改良したプロジェクト。
 
 ## Features
 
-### frontend
-* <a href="https://github.com/tiangolo/fastapi" class="external-link" target="_blank">**FastAPI**</a>
-* python 3.10
-* ドメイン駆動設計(DDD)風にディレクトリ構造を変更
-* **Secure password** hashing by default.
-* **JWT トークン認証**
-* **SQLAlchemy** models.
-* **Alembic** migrations.
-* **CORS** (Cross Origin Resource Sharing).
-* **Celery** worker that can import and use models and code from the rest of the backend selectively.
-* **Pytest** tests framework
-* **factory boy** model factory for tests.
-
 ### backend
+* <a href="https://github.com/tiangolo/fastapi" class="external-link" target="_blank">**FastAPI**</a>
+* [FastAPI Sample](https://github.com/allneko-club/fastapi-sample) をサブモジュールとして使用
+
+###　frontend
 * **Vue.js v3** composition API Style
 * **VeeValidate v4**
 * **pinia v2**
@@ -28,7 +19,6 @@ fastapiとVue.js v3 を使ったサンプルプロジェクト
 * **JWT Authentication** handling.
 * Not use UI Framework (include your favorite UI Framework easy)
 * Docker server based on **Nginx** (configured to play nicely with Vue-router).
-* .env file support at /backend/.env
 * common pages
   * Login, Logout
   * Admin view (superuser only), Private view (login user only).
