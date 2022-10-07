@@ -10,14 +10,14 @@ const routes = [
         component: () => import('@/views/Login.vue'),
       },
       {
-        path: 'recover-password',
-        name: 'recover-password',
-        component: () => import('@/views/RecoverPassword.vue'),
-      },
-      {
         path: 'reset-password',
         name: 'reset-password',
         component: () => import('@/views/ResetPassword.vue'),
+      },
+      {
+        path: 'reset-password-confirm',
+        name: 'reset-password-confirm',
+        component: () => import('@/views/resetPasswordConfirm.vue'),
       },
     ],
   },
